@@ -1,0 +1,95 @@
+@model BJProduction.Models.LoginViewModel
+
+@{
+    ViewBag.Title = "Log in";
+}
+@{Layout = null; }
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BJ Production</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+    <!-- Disable tap highlight on IE -->
+    <meta name="msapplication-tap-highlight" content="no">
+    <link rel="stylesheet" href="~/Content/Theme/assets/css/base.min.css">
+</head>
+<body>
+    <div class="app-container app-theme-white body-tabs-shadow">
+        <div class="app-container">
+            <div class="h-100 bg-plum-plate bg-animation">
+                <div class="d-flex h-100 justify-content-center align-items-center">
+                    <div class="mx-auto app-login-box col-md-8">
+                        <div class="app-logo-inverse mx-auto mb-3"></div>
+                        <div class="modal-dialog w-100 mx-auto">
+
+                            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", id = "form", role = "form" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <div class="h5 modal-title text-center">
+                                            <h4 class="mt-2">
+                                                <div>Welcome,</div>
+                                                <span>Please sign in to your account below.</span>
+                                            </h4>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="col-md-12">
+
+                                                <div class="position-relative form-group">
+                                                    @Html.TextBoxFor(m => m.UserName, new { placeholder = "User Name", @class = "form-control" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="position-relative form-group">
+                                                    @Html.PasswordFor(m => m.Password, new { placeholder = "Password", @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        @*<input type="checkbox" checked data-toggle="toggle" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">*@
+
+                                        <div class="custom-control custom-switch">
+                                            @Html.CheckBoxFor(m => m.RememberMe, new { @class = "custom-control-input" }) <label class="custom-control-label" for="RememberMe">Keep me logged in</label>
+                                        </div>
+
+                                        <!--<div class="divider"></div>
+    <h6 class="mb-0">No account? <a href="javascript:void(0);" class="text-primary">Sign up now</a></h6> -->
+                                    </div>
+                                    <div class="modal-footer clearfix">
+                                        <!-- <div class="float-left"><a href="javascript:void(0);" class="btn-lg btn btn-link">Recover Password</a></div> -->
+                                        <div class="float-right">
+                                            <input type="submit" value="Log in" class="btn btn-primary btn-lg" />
+                                        </div>
+                                    </div>
+                                    </div>
+                            }
+                        </div>
+                        <div class="text-center text-white opacity-8 mt-3">Copyright &#169; Bang Jin Group 2022.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--SCRIPTS INCLUDES-->
+    <!--CORE-->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/metismenu"></script>
+    <script src="~/Content/Theme/assets/js/scripts-init/app.js"></script>
+    <script src="~/Content/Theme/assets/js/scripts-init/demo.js"></script>
+
+    <!--Toggle Switch -->
+    <script src="~/Content/Theme/assets/js/vendors/form-components/toggle-switch.js"></script>
+</body>
+</html>

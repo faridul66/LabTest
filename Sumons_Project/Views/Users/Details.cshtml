@@ -1,0 +1,239 @@
+﻿@model BJProduction.Models.ApplicationUser
+@{
+    ViewBag.Title = "Details";
+}
+<link href="~/Content/DetailsStyle.css" rel="stylesheet" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">User Details</h3>
+            </div>
+            <div class="box-body">
+                <div class="DetailsPicContainer">
+                    <div class="container">
+                        <div class="row st2">
+                            <div class="firstcontainer">
+                                <div class="secondcontainer">
+                                    <div class="profile-pic">
+                                        <div class="picture">
+                                            <img src="~/Images/Identity/Users/Profiles/@Html.DisplayFor(x => x.PictureFile)" class="picture-src" id="ProPic" title="" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="DetailsMain">
+                    <div class="DetailsContainer">
+                        <table class="table table-responsive">
+                            <tr>
+                                <td>
+                                    User Name
+                                </td>
+                                <td style="width:5px">
+                                    :
+                                </td>
+                                <td>@Html.DisplayFor(x => x.UserName)</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Full Name
+                                </td>
+                                <td style="width:5px">
+                                    :
+                                </td>
+                                <td>@Html.DisplayFor(x => x.FirstName) @Html.DisplayFor(x => x.LastName)</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Email
+                                </td>
+                                <td style="width:5px">
+                                    :
+                                </td>
+                                <td>@Html.DisplayFor(x => x.Email)</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Phone Number
+                                </td>
+                                <td style="width:5px">
+                                    :
+                                </td>
+                                <td>@Html.DisplayFor(x => x.PhoneNumber)</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="box-footer">
+                <div class="row">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">User Group Details</h3>
+            </div>
+            <div class="box-body">
+                <div class="table-responsive GroupsTableY Table-Main-1">
+                    <div id="" class="fresh-table">
+                        <table id="fresh-table" class="table">
+                            <thead>
+                            <th data-field="name" data-sortable="true">
+                                List of Groups <span style="font-style:italic;color:white;text-shadow:0px 0px 2px #0094ff">@Model.UserName</span> Belongs to
+                            </th>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.GroupNames.Count != 0)
+                                {
+                                    foreach (var item in ViewBag.GroupNames)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @item
+                                            </td>
+
+                                        </tr>
+                                    }
+
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td style="color:red">
+                                            No Groups Assigned !
+                                        </td>
+
+                                    </tr>
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="box-footer">
+                <div class="row">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">User Permission Details</h3>
+            </div>
+            <div class="box-body">
+                <div class="table-responsive GroupsTableY Table-Main-1" style="">
+                    <div id="" class="fresh-table">
+                        <table id="fresh-table" class="table">
+                            <thead>
+                            <th data-field="name" data-sortable="true">
+                                List of Permissions Granted for <span style="font-style:italic;color:white;text-shadow:1px 1px 2px #0094ff">@Model.UserName</span>
+                            </th>
+                            </thead>
+                            <tbody>
+                                @if (@ViewBag.RoleCounts > 0)
+                                {
+
+                                    foreach (var item in ViewBag.RoleNames)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @item
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td style="color:red">
+                                            No Permissions Allowed !
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="box-footer">
+                <div class="row">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Assigned Branch</h3>
+            </div>
+            <div class="box-body">
+                <div class="table-responsive GroupsTableY Table-Main-1" style="">
+                    <div id="" class="fresh-table">
+                        <table id="fresh-table" class="table">
+                            <thead>
+                            <th data-field="name" data-sortable="true">
+                                Branches Assigned for <span style="font-style:italic;color:white;text-shadow:1px 1px 2px #0094ff">@Model.UserName</span>
+                            </th>
+                            </thead>
+                            <tbody>
+                                @if(Enumerable.Count(ViewBag.BranchList) > 0)
+                                {
+
+                                    foreach (var item in ViewBag.BranchList)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @item
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td style="color:red">
+                                            No Branches Assigned !
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="box-footer">
+                <div class="row">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
