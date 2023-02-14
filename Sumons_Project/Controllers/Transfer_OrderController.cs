@@ -16,27 +16,21 @@ namespace BJProduction.Controllers
     {
         public Transfer_OrderController()
         {
-
         }
 
 
         public Transfer_OrderController(ApplicationUserManager userManager,
-           ApplicationRoleManager roleManager)
+            ApplicationRoleManager roleManager)
         {
             UserManager = userManager;
         }
 
         private ApplicationUserManager _userManager;
+
         public ApplicationUserManager UserManager
         {
-            get
-            {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            set
-            {
-                _userManager = value;
-            }
+            get { return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>(); }
+            set { _userManager = value; }
         }
 
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -44,7 +38,8 @@ namespace BJProduction.Controllers
         // GET: Transfer_Order
         public ActionResult Index()
         {
-            var transfer_Order = db.Transfer_Order.Include(t => t.Feature).Include(t => t.Product_Type).Include(t => t.Unit_Measurement);
+            var transfer_Order = db.Transfer_Order.Include(t => t.Feature).Include(t => t.Product_Type)
+                .Include(t => t.Unit_Measurement);
             return View(transfer_Order.ToList());
         }
 
@@ -55,11 +50,13 @@ namespace BJProduction.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Transfer_Order transfer_Order = db.Transfer_Order.Find(id);
             if (transfer_Order == null)
             {
                 return HttpNotFound();
             }
+
             return View(transfer_Order);
         }
 
@@ -77,7 +74,10 @@ namespace BJProduction.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,from_company_id,to_company_id,Product_Typeid,qty,Featureid,tr_count,Unit_Measurementid,order_no,transfer_from_date,status,chged_by,chgd_date")] Transfer_Order transfer_Order)
+        public ActionResult Create(
+            [Bind(Include =
+                "id,from_company_id,to_company_id,Product_Typeid,qty,Featureid,tr_count,Unit_Measurementid,order_no,transfer_from_date,status,chged_by,chgd_date")]
+            Transfer_Order transfer_Order)
         {
             if (ModelState.IsValid)
             {
@@ -88,7 +88,8 @@ namespace BJProduction.Controllers
 
             ViewBag.Featureid = new SelectList(db.Features, "id", "feature_code", transfer_Order.Featureid);
             ViewBag.Product_Typeid = new SelectList(db.Product_Type, "id", "type_code", transfer_Order.Product_Typeid);
-            ViewBag.Unit_Measurementid = new SelectList(db.Unit_Measurement, "id", "code", transfer_Order.Unit_Measurementid);
+            ViewBag.Unit_Measurementid =
+                new SelectList(db.Unit_Measurement, "id", "code", transfer_Order.Unit_Measurementid);
             return View(transfer_Order);
         }
 
@@ -99,14 +100,17 @@ namespace BJProduction.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Transfer_Order transfer_Order = db.Transfer_Order.Find(id);
             if (transfer_Order == null)
             {
                 return HttpNotFound();
             }
+
             ViewBag.Featureid = new SelectList(db.Features, "id", "feature_code", transfer_Order.Featureid);
             ViewBag.Product_Typeid = new SelectList(db.Product_Type, "id", "type_name", transfer_Order.Product_Typeid);
-            ViewBag.Unit_Measurementid = new SelectList(db.Unit_Measurement, "id", "code", transfer_Order.Unit_Measurementid);
+            ViewBag.Unit_Measurementid =
+                new SelectList(db.Unit_Measurement, "id", "code", transfer_Order.Unit_Measurementid);
             return View(transfer_Order);
         }
 
@@ -115,7 +119,10 @@ namespace BJProduction.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,from_company_id,to_company_id,Product_Typeid,qty,Featureid,tr_count,Unit_Measurementid,order_no,transfer_from_date,status,chged_by,chgd_date")] Transfer_Order transfer_Order)
+        public ActionResult Edit(
+            [Bind(Include =
+                "id,from_company_id,to_company_id,Product_Typeid,qty,Featureid,tr_count,Unit_Measurementid,order_no,transfer_from_date,status,chged_by,chgd_date")]
+            Transfer_Order transfer_Order)
         {
             if (ModelState.IsValid)
             {
@@ -123,9 +130,11 @@ namespace BJProduction.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
             ViewBag.Featureid = new SelectList(db.Features, "id", "feature_code", transfer_Order.Featureid);
             ViewBag.Product_Typeid = new SelectList(db.Product_Type, "id", "type_code", transfer_Order.Product_Typeid);
-            ViewBag.Unit_Measurementid = new SelectList(db.Unit_Measurement, "id", "code", transfer_Order.Unit_Measurementid);
+            ViewBag.Unit_Measurementid =
+                new SelectList(db.Unit_Measurement, "id", "code", transfer_Order.Unit_Measurementid);
             return View(transfer_Order);
         }
 
@@ -136,11 +145,13 @@ namespace BJProduction.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Transfer_Order transfer_Order = db.Transfer_Order.Find(id);
             if (transfer_Order == null)
             {
                 return HttpNotFound();
             }
+
             return View(transfer_Order);
         }
 
@@ -154,7 +165,6 @@ namespace BJProduction.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-
 
 
         [HttpPost]
@@ -201,9 +211,6 @@ namespace BJProduction.Controllers
             db.SaveChanges();
 
 
-
-
-
             for (int i = 0; i < values[1].Length; i++)
             {
                 TransferProductFeatures transferProductFeatures = new TransferProductFeatures();
@@ -216,24 +223,20 @@ namespace BJProduction.Controllers
                 db.TransferProductFeatures.Add(transferProductFeatures);
                 db.SaveChanges();
             }
+
             for (int i = 0; i < values[2].Length; i++)
             {
-
                 TransferProductFeatures transferProductFeatures = new TransferProductFeatures();
                 transferProductFeatures.OrderId = transfer_Order.id;
                 transferProductFeatures.ProductTypeId = productTypeId;
                 transferProductFeatures.FeatureTypeId = Convert.ToInt32(values[2][0][0]);
-                transferProductFeatures.FearureId = db.Features.FirstOrDefault(x => x.Feature_Typeid == transferProductFeatures.FeatureTypeId).id;
+                transferProductFeatures.FearureId = db.Features
+                    .FirstOrDefault(x => x.Feature_Typeid == transferProductFeatures.FeatureTypeId).id;
                 transferProductFeatures.UnitId = Convert.ToInt32(values[2][0][2]);
                 transferProductFeatures.TxtValue = Convert.ToInt32(values[2][0][1]);
                 db.TransferProductFeatures.Add(transferProductFeatures);
                 db.SaveChanges();
-
             }
-
-
-
-
 
 
             //Production_Indent production_Indent = new Production_Indent();
@@ -280,6 +283,7 @@ namespace BJProduction.Controllers
 
             return Json(transfer_Order.id, JsonRequestBehavior.AllowGet);
         }
+
         [HttpPost]
         [Authorize]
         public JsonResult UpdateData(string[][][] values)
@@ -314,7 +318,8 @@ namespace BJProduction.Controllers
             transfer_Order.chgd_date = DateTime.UtcNow;
             db.SaveChanges();
 
-            TransferOrderExt transferOrderExt = db.TransferOrderExts.Find(db.TransferOrderExts.FirstOrDefault(x => x.OrderId == orderId).Id);
+            TransferOrderExt transferOrderExt =
+                db.TransferOrderExts.Find(db.TransferOrderExts.FirstOrDefault(x => x.OrderId == orderId).Id);
             transferOrderExt.OrderId = transfer_Order.id;
             transferOrderExt.FromSite = fromSite;
             transferOrderExt.FromWarehouse = fromWarehouse;
@@ -340,24 +345,20 @@ namespace BJProduction.Controllers
                 db.TransferProductFeatures.Add(transferProductFeatures);
                 db.SaveChanges();
             }
+
             for (int i = 0; i < values[2].Length; i++)
             {
-
                 TransferProductFeatures transferProductFeatures = new TransferProductFeatures();
                 transferProductFeatures.OrderId = transfer_Order.id;
                 transferProductFeatures.ProductTypeId = productTypeId;
                 transferProductFeatures.FeatureTypeId = Convert.ToInt32(values[2][0][0]);
-                transferProductFeatures.FearureId = db.Features.FirstOrDefault(x => x.Feature_Typeid == transferProductFeatures.FeatureTypeId).id;
+                transferProductFeatures.FearureId = db.Features
+                    .FirstOrDefault(x => x.Feature_Typeid == transferProductFeatures.FeatureTypeId).id;
                 transferProductFeatures.UnitId = Convert.ToInt32(values[2][0][2]);
                 transferProductFeatures.TxtValue = Convert.ToInt32(values[2][0][1]);
                 db.TransferProductFeatures.Add(transferProductFeatures);
                 db.SaveChanges();
-
             }
-
-
-
-
 
 
             //Production_Indent production_Indent = new Production_Indent();
@@ -404,11 +405,15 @@ namespace BJProduction.Controllers
 
             return Json(transfer_Order.id, JsonRequestBehavior.AllowGet);
         }
+
         public JsonResult GetFeatures(int id)
         {
-            var featurs = db.TransferProductFeatures.Join(db.Feature_Type, a => a.FeatureTypeId, b => b.id, (a, b) => new { a, b }).Where(x => x.a.OrderId == id);
+            var featurs = db.TransferProductFeatures
+                .Join(db.Feature_Type, a => a.FeatureTypeId, b => b.id, (a, b) => new { a, b })
+                .Where(x => x.a.OrderId == id);
             return Json(featurs.ToArray(), JsonRequestBehavior.AllowGet);
         }
+
         public JsonResult GetTransferInfo(int id)
         {
             var transFeature = db.TransferOrderExts.Where(x => x.OrderId == id);
@@ -488,61 +493,61 @@ namespace BJProduction.Controllers
                     Serial = d.product_serial,
                     UnitId = c.Unit_Measurementid
                 }
-                ).Union(
-from a in db.General_Ledger
-join b in db.Production_Ledger on a.trans_ref_id equals b.id
-join c in db.Production_Indent on b.Production_Indentid equals c.id
-join d in db.Products on a.Productid equals d.id
-join e in db.Product_Type on d.Product_Typeid equals e.id
-join f in db.Machines on c.Machineid equals f.id
-where a.Transaction_Typeid == 2 && a.is_current == true
-select new
-{
-    GLID = a.id,
-    CompanyId = f.Companyid,
-    WarehouseId = b.Locationid,
-    Product = e.type_name,
-    ProductTypeId = d.Product_Typeid,
-    ProductId = a.Productid,
-    QTY = b.prod_count,
-    Serial = d.product_serial,
-    UnitId = c.Unit_Measurementid
-}
-).Union(
-from a in db.General_Ledger
-join b in db.Transfer_Ledger on a.trans_ref_id equals b.id
-join c in db.Transfer_Order on b.Transfer_Orderid equals c.id
-join d in db.Products on a.Productid equals d.id
-join e in db.Product_Type on d.Product_Typeid equals e.id
-where a.Transaction_Typeid == 4 && a.is_current == true
-select new
-{
-    GLID = a.id,
-    CompanyId = c.to_company_id,
-    WarehouseId = b.Locationid,
-    Product = e.type_name,
-    ProductTypeId = d.Product_Typeid,
-    ProductId = a.Productid,
-    QTY = b.tr_count,
-    Serial = d.product_serial,
-    UnitId = c.Unit_Measurementid
-}
-);
+            ).Union(
+                from a in db.General_Ledger
+                join b in db.Production_Ledger on a.trans_ref_id equals b.id
+                join c in db.Production_Indent on b.Production_Indentid equals c.id
+                join d in db.Products on a.Productid equals d.id
+                join e in db.Product_Type on d.Product_Typeid equals e.id
+                join f in db.Machines on c.Machineid equals f.id
+                where a.Transaction_Typeid == 2 && a.is_current == true
+                select new
+                {
+                    GLID = a.id,
+                    CompanyId = f.Companyid,
+                    WarehouseId = b.Locationid,
+                    Product = e.type_name,
+                    ProductTypeId = d.Product_Typeid,
+                    ProductId = a.Productid,
+                    QTY = b.prod_count,
+                    Serial = d.product_serial,
+                    UnitId = c.Unit_Measurementid
+                }
+            ).Union(
+                from a in db.General_Ledger
+                join b in db.Transfer_Ledger on a.trans_ref_id equals b.id
+                join c in db.Transfer_Order on b.Transfer_Orderid equals c.id
+                join d in db.Products on a.Productid equals d.id
+                join e in db.Product_Type on d.Product_Typeid equals e.id
+                where a.Transaction_Typeid == 4 && a.is_current == true
+                select new
+                {
+                    GLID = a.id,
+                    CompanyId = c.to_company_id,
+                    WarehouseId = b.Locationid,
+                    Product = e.type_name,
+                    ProductTypeId = d.Product_Typeid,
+                    ProductId = a.Productid,
+                    QTY = b.tr_count,
+                    Serial = d.product_serial,
+                    UnitId = c.Unit_Measurementid
+                }
+            );
 
 
             var productsToExclude =
                 (from a in db.Consumption_Ledger
-                 join b in db.Products on a.Productid equals b.id
-                 where b.Product_Typeid == productTypeId
-                 select a.Productid).Union(
+                    join b in db.Products on a.Productid equals b.id
+                    where b.Product_Typeid == productTypeId
+                    select a.Productid).Union(
                     from a in db.Sales_Ledger
                     join b in db.Products on a.Productid equals b.id
                     where b.Product_Typeid == productTypeId
                     select a.Productid).Union(
-            from a in db.Transfer_Ledger
-            join b in db.Products on a.Productid equals b.id
-            where b.Product_Typeid == productTypeId && a.status != "C"
-            select a.Productid).ToList();
+                    from a in db.Transfer_Ledger
+                    join b in db.Products on a.Productid equals b.id
+                    where b.Product_Typeid == productTypeId && a.status != "C"
+                    select a.Productid).ToList();
             return Json(Products.Where(x => !productsToExclude.Contains(x.ProductId)), JsonRequestBehavior.AllowGet);
         }
 
@@ -563,9 +568,7 @@ select new
                 transfer_Ledger.chgd_date = DateTime.UtcNow;
                 db.Transfer_Ledger.Add(transfer_Ledger);
                 db.SaveChanges();
-
             }
-
 
 
             return Json("", JsonRequestBehavior.AllowGet);
@@ -573,7 +576,8 @@ select new
 
         public JsonResult YetToTransferItems(int id)
         {
-            var products = db.Transfer_Ledger.Include(x => x.Product).Include(x => x.Product.Product_Type).Where(x => x.Transfer_Orderid == id);
+            var products = db.Transfer_Ledger.Include(x => x.Product).Include(x => x.Product.Product_Type)
+                .Where(x => x.Transfer_Orderid == id);
             return Json(products, JsonRequestBehavior.AllowGet);
         }
 
@@ -592,6 +596,7 @@ select new
             {
                 message = ex.Message;
             }
+
             return Json(message, JsonRequestBehavior.AllowGet);
         }
 
@@ -601,6 +606,7 @@ select new
             {
                 db.Dispose();
             }
+
             base.Dispose(disposing);
         }
     }

@@ -6,8 +6,8 @@
 }
 
 <head>
-    <link href="~/Content/Exp/Select2.css" rel="stylesheet" />
-    <link href="~/Content/Exp/select2-bootstrap4.css" rel="stylesheet" />
+    <link href="~/Content/Exp/Select2.css" rel="stylesheet"/>
+    <link href="~/Content/Exp/select2-bootstrap4.css" rel="stylesheet"/>
     <!-- select2-bootstrap4-theme -->
 
 </head>
@@ -35,7 +35,7 @@
                     <div class="form-row">
                         <div class="col-md-2">
                             <div class="position-relative form-group">
-                                @Html.LabelFor(model => model.order_no, htmlAttributes: new { @class = "" })
+                                @Html.LabelFor(model => model.order_no, new { @class = "" })
 
                                 @Html.EditorFor(model => model.order_no, new { htmlAttributes = new { @class = "form-control" } })
                                 @Html.ValidationMessageFor(model => model.order_no, "", new { @class = "text-danger" })
@@ -48,16 +48,16 @@
 
                         <div class="col-md-2">
                             <div class="position-relative form-group">
-                                @Html.LabelFor(model => model.Product_Typeid, "Product_Typeid", htmlAttributes: new { @class = "" })
+                                @Html.LabelFor(model => model.Product_Typeid, "Product_Typeid", new { @class = "" })
 
-                                @Html.DropDownList("Product_Typeid", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.DropDownList("Product_Typeid", null, new { @class = "form-control" })
                                 @Html.ValidationMessageFor(model => model.Product_Typeid, "", new { @class = "text-danger" })
 
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="position-relative form-group">
-                                @Html.LabelFor(model => model.qty, htmlAttributes: new { @class = "" })
+                                @Html.LabelFor(model => model.qty, new { @class = "" })
 
                                 @Html.EditorFor(model => model.qty, new { htmlAttributes = new { @class = "form-control" } })
                                 @Html.ValidationMessageFor(model => model.qty, "", new { @class = "text-danger" })
@@ -68,7 +68,7 @@
 
                         <div class="col-md-2">
                             <div class="position-relative form-group">
-                                @Html.LabelFor(model => model.transfer_from_date, htmlAttributes: new { @class = "" })
+                                @Html.LabelFor(model => model.transfer_from_date, new { @class = "" })
 
                                 @Html.EditorFor(model => model.transfer_from_date, new { htmlAttributes = new { @class = "form-control" } })
                                 @Html.ValidationMessageFor(model => model.transfer_from_date, "", new { @class = "text-danger" })
@@ -99,12 +99,10 @@
 
 
                 </div>
-
             }
         </div>
     </div>
 </div>
-
 
 
 <div id="" class="" style="">
@@ -194,18 +192,18 @@
                     <div class="form-row">
                         <table class="mb-0 table table-hover">
                             <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Item</th>
-                                    <th>Serial No.</th>
-                                    <th>Weight</th>
-                                    <th>Unit</th>
-                                    <th>Time</th>
-                                    <th>From Site</th>
-                                    <th>To Site</th>
-                                    <th>From Warehouse</th>
-                                    <th>To Warehouse</th>
-                                </tr>
+                            <tr>
+                                <th>#</th>
+                                <th>Item</th>
+                                <th>Serial No.</th>
+                                <th>Weight</th>
+                                <th>Unit</th>
+                                <th>Time</th>
+                                <th>From Site</th>
+                                <th>To Site</th>
+                                <th>From Warehouse</th>
+                                <th>To Warehouse</th>
+                            </tr>
                             </thead>
                             <tbody id="YetToTransfer">
                             </tbody>
@@ -217,9 +215,6 @@
         </div>
     </div>
 </div>
-
-
-
 
 
 <div class="Button_Section" style=" position: fixed; bottom: 40px; right: 40px">
@@ -765,7 +760,7 @@ function LoadDynamicFeature(eventType, productid) {
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
+                cancelButtonColor: '#d93232',
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
