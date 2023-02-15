@@ -512,6 +512,7 @@ namespace BJProduction.Controllers
                     QTY = b.prod_count,
                     Serial = d.product_serial,
                     UnitId = c.Unit_Measurementid
+
                 }
             ).Union(
                 from a in db.General_Ledger
