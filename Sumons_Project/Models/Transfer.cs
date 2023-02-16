@@ -58,4 +58,12 @@ namespace BJProduction.Models
 
 
 
+    public class ProductFeatureList
+    {
+        public int FeatureTypeId { get; set; }
+        public int FeatureId { get; set; }
+        public double Value { get; set; }
+        public int UnitId { get; set; }
+    }
+
 }

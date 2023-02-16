@@ -58,7 +58,7 @@
                             <div class="position-relative form-group">
                                 @Html.LabelFor(model => model.qty, htmlAttributes: new { @class = "" })
 
-                                @Html.EditorFor(model => model.qty, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.EditorFor(model => model.qty, new { htmlAttributes = new { @class = "form-control", @type = "" } })
                                 @Html.ValidationMessageFor(model => model.qty, "", new { @class = "text-danger" })
 
                             </div>
@@ -69,7 +69,7 @@
                             <div class="position-relative form-group">
                                 @Html.LabelFor(model => model.transfer_from_date, htmlAttributes: new { @class = "" })
 
-                                @Html.EditorFor(model => model.transfer_from_date, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.EditorFor(model => model.transfer_from_date, new { htmlAttributes = new { @class = "form-control", @data_toggle = "datepicker" } })
                                 @Html.ValidationMessageFor(model => model.transfer_from_date, "", new { @class = "text-danger" })
 
                             </div>
@@ -168,31 +168,24 @@
             </div>
 
         </div>
-        <div class="col-md-12">
+        <div class="col-md-12" style="display:none">
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title">Product to Transfer</h5>
                     <div class="form-row">
-                        <div class="col-md-11">
+                        <div class="col-md-10">
                             <div class="position-relative form-group">
                                 <label for="" class="">Product Serial</label>
                                 <select class="Products form-control" multiple>
-                                    <option value="1">2100000133</option>
-                                    <option value="2">2100000144</option>
-                                    <option value="3">2100000155</option>
-                                    <option value="4">2100000166</option>
-                                    <option value="5">2100000177</option>
-                                    <option value="6">2100000188</option>
-                                    <option value="7">2100000199</option>
-                                </select>
+                                                              </select>
                             </div>
                         </div>
 
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                             <div class="position-relative form-group">
                                 <label for="" class="" style="color:white"> .</label>
                                 <button id="TransferBtn" class="mb-2 mr-2 btn btn-success btn-primary btn-lg btn-block">
-                                    Transfer
+                                    Add to Transfer List
                                 </button>
                             </div>
                         </div>

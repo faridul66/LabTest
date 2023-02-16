@@ -841,6 +841,57 @@ $(document.body).on("change", ".FeaturesTxtBoxUnit", function() {
     $(".Text" + $(this).attr("id")).attr("UnitValue", $(this).val())
 })
 
+
+
+        $("#Companyid").change(function () {
+            var compid = $(this).val();
+
+                if (compid != undefined && compid != '') {
+        var json = {
+            id: compid
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetSite", "Purchase_Order")',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(json),
+            success: function(data) {
+                $(".SiteLoader").empty();
+                $(".SiteLoader").append("<div class=\"position-relative form-group\"><label for=\"\" class=\"\">Site</label><select class=\"form-control Site\"></select></div>")
+                $.each(data, function(key, value) {
+                    $(".Site").append("<option value=\"" + value.Locations.id + "\">" + value.Locations.name + "</option>");
+                });
+
+                var siteid = $(".Site").val();
+                if (siteid != undefined && siteid != '') {
+                    var json = {
+                        id: siteid
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("GetWh", "Purchase_Order")',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(json),
+                        success: function(data) {
+                            $(".WarehouseLoader").empty();
+                            $(".SiteProductCount").empty();
+                            $(".WarehouseLoader").append("<div class=\"position-relative form-group\"><label for=\"\" class=\"\">Warehouse</label><select class=\"form-control Warehouse\"></select></div>")
+                            $(".SiteProductCount").append("<div class=\"position-relative form-group\"><label for=\"\" class=\"\">Count</label><input class=\"form-control SiteProductCountVal  input-mask-trigger\" data-inputmask=\"'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true\" im-insert=\"true\"></div>")
+                            $.each(data, function(key, value) {
+                                //alert("hi");
+                                $(".Warehouse").append("<option value=\"" + value.id + "\">" + value.name + "</option>");
+
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    }
+        })
+
+
+
 function Filldata(dataGetFeatures) {
     // console.log(dataGetFeatures);
     for (let i = 0; i < dataGetFeatures.length; i++) {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -421,58 +422,13 @@ namespace BJProduction.Controllers
         }
 
 
-        public JsonResult GetProducts()
+        public JsonResult GetProducts(int[] values)
         {
-            int productTypeId = 1;
-            int wareHouseId = 14;
-            //         var Products =
-            //             (from a in db.General_Ledger
-            //              join b in db.Purchase_Ledger on a.trans_ref_id equals b.id
-            //              where a.Transaction_Typeid == 1 && b.status == "C"
-            //              join c in db.Products on b.Productid equals c.id
-            //              where c.Product_Typeid == productTypeId && b.Locationid == wareHouseId
-            //              select new
-            //{
-            //    GLID = a.id,
-            //    ProductTypeId = c.Product_Typeid,
-            //    ProductSerial = c.product_serial,
-            //    QValue = b.pur_count,
-            //    ProductId = a.Productid,
-            //    IsCurrent = a.is_current,
-            //    LocationId = b.Locationid
+            int orderId = values[0];
+            int productTypeId = values[1];
+            int companyId = values[2];
 
-            //}).Union
-            // (from a in db.General_Ledger
-            //  join b in db.Production_Ledger on a.trans_ref_id equals b.id
-            //  where a.Transaction_Typeid == 2 && b.status == "C"
-            //  join c in db.Products on b.Productid equals c.id
-            //  where c.Product_Typeid == productTypeId && b.Locationid == wareHouseId
-            //  select new
-            //  {
-            //      GLID = a.id,
-            //      ProductTypeId = c.Product_Typeid,
-            //      ProductSerial = c.product_serial,
-            //      QValue = b.prod_count,
-            //      ProductId = a.Productid,
-            //      IsCurrent = a.is_current,
-            //      LocationId = b.Locationid
-            //  }).Union
-            // (from a in db.General_Ledger
-            //  join b in db.Transfer_Ledger on a.trans_ref_id equals b.id
-            //  where a.Transaction_Typeid == 4 && b.status == "C" && a.is_current == true
-            //  join c in db.Products on b.Productid equals c.id
-            //  where c.Product_Typeid == productTypeId && b.Locationid == wareHouseId
-            //  select new
-            //  {
-            //      GLID = a.id,
-            //      ProductTypeId = c.Product_Typeid,
-            //      ProductSerial = c.product_serial,
-            //      QValue = b.tr_count,
-            //      ProductId = a.Productid,
-            //      IsCurrent = a.is_current,
-            //      LocationId = b.Locationid
-            //  });
-
+            int wareHouseId = values[3];
 
             var Products = (
                 from a in db.General_Ledger
@@ -538,9 +494,9 @@ namespace BJProduction.Controllers
 
             var productsToExclude =
                 (from a in db.Consumption_Ledger
-                    join b in db.Products on a.Productid equals b.id
-                    where b.Product_Typeid == productTypeId
-                    select a.Productid).Union(
+                 join b in db.Products on a.Productid equals b.id
+                 where b.Product_Typeid == productTypeId
+                 select a.Productid).Union(
                     from a in db.Sales_Ledger
                     join b in db.Products on a.Productid equals b.id
                     where b.Product_Typeid == productTypeId
@@ -549,7 +505,51 @@ namespace BJProduction.Controllers
                     join b in db.Products on a.Productid equals b.id
                     where b.Product_Typeid == productTypeId && a.status != "C"
                     select a.Productid).ToList();
-            return Json(Products.Where(x => !productsToExclude.Contains(x.ProductId)), JsonRequestBehavior.AllowGet);
+            var TempList = Products.Where(x => !productsToExclude.Contains(x.ProductId) && x.CompanyId == companyId && x.WarehouseId == wareHouseId);
+
+
+            var orderFeatures = db.TransferProductFeatures
+                .Where(tpf => tpf.OrderId == orderId)
+                .Select(tpf => new ProductFeatureList
+                {
+                    FeatureTypeId = tpf.FeatureTypeId,
+                    FeatureId = tpf.FearureId,
+                    Value = tpf.TxtValue ?? 0,
+                    UnitId = tpf.UnitId ?? 0
+                }).ToList();
+
+            List<int> tempProductIdList = TempList.Select(x => x.ProductId).ToList();
+
+            for (int i = 0; i < tempProductIdList.Count; i++)
+            {
+                int productId = tempProductIdList[i];
+                var productFeatures = db.Product_Feature
+                    .Where(pf => pf.Productid == productId)
+                    .Join(db.Features, pf => pf.Featureid, f => f.id, (pf, f) => new { Feature = f, ProductFeature = pf })
+                    .Join(db.Feature_Type, x => x.Feature.Feature_Typeid, ft => ft.id, (x, ft) => new { Feature = x.Feature, ProductFeature = x.ProductFeature, FeatureType = ft })
+                    .Select(x => new ProductFeatureList
+                    {
+                        FeatureTypeId = x.FeatureType.id,
+                        FeatureId = x.ProductFeature.Featureid,
+                        Value = x.ProductFeature.Value,
+                        UnitId = x.ProductFeature.Unit_Measurementid ?? 0
+                    }).ToList();
+
+                bool areEqual = orderFeatures.Count == productFeatures.Count
+                                && orderFeatures.SelectMany(x => new[] { x.FeatureTypeId, x.FeatureId, x.Value, x.UnitId })
+                                    .SequenceEqual(productFeatures.SelectMany(x => new[] { x.FeatureTypeId, x.FeatureId, x.Value, x.UnitId }));
+
+
+                if (!areEqual)
+                {
+                    TempList = TempList.Where(x => x.ProductId != productId);
+                }
+
+            }
+
+
+
+            return Json(TempList, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult SendToLedger(string[][] values)
@@ -601,6 +601,78 @@ namespace BJProduction.Controllers
             return Json(message, JsonRequestBehavior.AllowGet);
         }
 
+
+
+        public JsonResult SubmitTransfer(int id)
+        {
+
+            Transfer_Order transferOrder = db.Transfer_Order.Find(id);
+            transferOrder.status = "C";
+            db.SaveChanges();
+
+                List<int> Transfer_Ledger = db.Transfer_Ledger.Where(x=>x.Transfer_Orderid==id).Select(x => x.id).ToList();
+                var transTypeId = db.Transaction_Type.FirstOrDefault(x => x.type_code == "TR").id;
+                foreach (var item in Transfer_Ledger)
+                {
+
+                    // Transfer Ledger Status= C
+                    var ledger = db.Transfer_Ledger.Find(item);
+                    ledger.status = "C";
+                    db.SaveChanges();
+
+
+                 // Find General Ledger ID
+                    var Products = (
+               from a in db.General_Ledger
+               join b in db.Purchase_Ledger on a.trans_ref_id equals b.id
+               where a.Transaction_Typeid == 1 && a.is_current == true && a.Productid== ledger.Productid
+               select new
+               {
+                   GLID = a.id,
+               }
+               ).Union(
+               from a in db.General_Ledger
+               join b in db.Production_Ledger on a.trans_ref_id equals b.id
+             
+               where a.Transaction_Typeid == 2 && a.is_current == true && a.Productid == ledger.Productid
+               select new
+               {
+                   GLID = a.id,
+
+               }
+               ).Union(
+               from a in db.General_Ledger
+               join b in db.Transfer_Ledger on a.trans_ref_id equals b.id
+              
+               where a.Transaction_Typeid == 4 && a.is_current == true && a.Productid == ledger.Productid
+               select new
+               {
+                   GLID = a.id,
+                  
+               }
+               );
+
+                    // Set General Ledger isCurrent false
+                    General_Ledger gl = db.General_Ledger.Find(Products.FirstOrDefault().GLID);
+                    gl.is_current = false;
+                    db.SaveChanges();
+
+
+                    // Insert New Data to General Ledger
+                    General_Ledger generalLedger = new General_Ledger();
+                    generalLedger.Productid = ledger.Productid;
+                    generalLedger.Transaction_Typeid = transTypeId;
+                    generalLedger.trans_ref_id = ledger.id;
+                    generalLedger.trans_date = ledger.arrival_date;
+                    generalLedger.is_current = true;
+                    generalLedger.chged_by = UserManager.FindById(User.Identity.GetUserId()).UserName;
+                    generalLedger.chgd_date = DateTime.Now;
+                    db.General_Ledger.Add(generalLedger);
+                    db.SaveChanges();
+                }
+
+            return Json("", JsonRequestBehavior.AllowGet);
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

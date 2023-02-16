@@ -6,14 +6,14 @@
 }
 
 <head>
-    <link href="~/Content/Exp/Select2.css" rel="stylesheet"/>
-    <link href="~/Content/Exp/select2-bootstrap4.css" rel="stylesheet"/>
+    <link href="~/Content/Exp/Select2.css" rel="stylesheet" />
+    <link href="~/Content/Exp/select2-bootstrap4.css" rel="stylesheet" />
     <!-- select2-bootstrap4-theme -->
 
 </head>
 
 <div class="row">
-    <div class="col-lg-12">
+    <div class="col-lg-12 OrderArea">
         <div class="main-card mb-3 card">
             @using (Html.BeginForm())
             {
@@ -31,7 +31,7 @@
 
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                     @Html.HiddenFor(model => model.id)
-
+                    @Html.HiddenFor(model => model.status)
                     <div class="form-row">
                         <div class="col-md-2">
                             <div class="position-relative form-group">
@@ -59,7 +59,7 @@
                             <div class="position-relative form-group">
                                 @Html.LabelFor(model => model.qty, new { @class = "" })
 
-                                @Html.EditorFor(model => model.qty, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.EditorFor(model => model.qty, new { htmlAttributes = new { @class = "form-control", @type = "" } })
                                 @Html.ValidationMessageFor(model => model.qty, "", new { @class = "text-danger" })
 
                             </div>
@@ -70,7 +70,7 @@
                             <div class="position-relative form-group">
                                 @Html.LabelFor(model => model.transfer_from_date, new { @class = "" })
 
-                                @Html.EditorFor(model => model.transfer_from_date, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.EditorFor(model => model.transfer_from_date, new { htmlAttributes = new { @class = "form-control", @data_toggle = "datepicker" } })
                                 @Html.ValidationMessageFor(model => model.transfer_from_date, "", new { @class = "text-danger" })
 
                             </div>
@@ -107,7 +107,7 @@
 
 <div id="" class="" style="">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 From">
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title">From</h5>
@@ -139,7 +139,7 @@
             </div>
 
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 To">
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title">To</h5>
@@ -172,7 +172,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Product to Transfer</h5>
                     <div class="form-row">
-                        <div class="col-md-11">
+                        <div class="col-md-10">
                             <div class="position-relative form-group">
                                 <label for="" class="">Product Serial</label>
                                 <select id="Products" class="Products form-control" multiple>
@@ -180,11 +180,11 @@
                             </div>
                         </div>
 
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                             <div class="position-relative form-group">
                                 <label for="" class="" style="color:white"> .</label>
                                 <button id="TransferBtn" class="mb-2 mr-2 btn btn-success btn-primary btn-lg btn-block">
-                                    Transfer
+                                    Add to Transfer List
                                 </button>
                             </div>
                         </div>
@@ -192,18 +192,18 @@
                     <div class="form-row">
                         <table class="mb-0 table table-hover">
                             <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Item</th>
-                                <th>Serial No.</th>
-                                <th>Weight</th>
-                                <th>Unit</th>
-                                <th>Time</th>
-                                <th>From Site</th>
-                                <th>To Site</th>
-                                <th>From Warehouse</th>
-                                <th>To Warehouse</th>
-                            </tr>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Item</th>
+                                    <th>Serial No.</th>
+                                    <th>Weight</th>
+                                    <th>Unit</th>
+                                    <th>Time</th>
+                                    <th>From Site</th>
+                                    <th>To Site</th>
+                                    <th>From Warehouse</th>
+                                    <th>To Warehouse</th>
+                                </tr>
                             </thead>
                             <tbody id="YetToTransfer">
                             </tbody>
@@ -221,7 +221,7 @@
     @*<button class="btn btn-danger btn-lg">Cancel</button>*@
     <button id="SaveBtn" class="btn btn-success btn-lg" style="display:none">Save</button>
     <button id="UpdateBtn" class="btn btn-success btn-lg" style="display:none">Update</button>
-    <button id="Submit" class="btn btn-success btn-lg" style="display:none">Submit Transfer</button>
+    <button id="SubmitBtn" class="btn btn-success btn-lg" style="display:none">Submit Transfer</button>
 </div>
 
 
@@ -256,7 +256,6 @@
             LoadTransferInfo(@Model.id)
             LoadProducts();
             LoadYetToTransfer(@Model.id)
-
         })
 
 
@@ -501,19 +500,22 @@ function LoadDynamicFeature(eventType, productid) {
     });
         }
         function LoadProducts() {
+            var OrderData = [@Model.id, $("#Product_Typeid").val(), $("#Company1").val(), $("#Warehouse1").val()]
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("GetProducts", "Transfer_Order")',
                 contentType: "application/json; charset=utf-8",
-                // async: false,
-                data: JSON.stringify(null),
+                async: false,
+                data: JSON.stringify({ values: OrderData }),
                 success: function (data) {
+                    console.log(data)
                     $("#Products").empty();
                     $.each(data, function (key, value) {
-                        $("#Products").append("<option QTY=" + value.QValue+" value=\""+ value.ProductId + "\">"+value.ProductSerial+"</option>")
+                        $("#Products").append("<option QTY=" + value.QTY+" value=\""+ value.ProductId + "\">"+value.Serial+"</option>")
                     })
                 }
             });
+         
         }
 
 
@@ -531,9 +533,13 @@ function LoadDynamicFeature(eventType, productid) {
             console.log(data.length)
             if (data.length === 0) {
                 $("#UpdateBtn").show();
+                $("#SubmitBtn").hide();
+                EnableInputs();
             }
             else {
                 $("#UpdateBtn").hide();
+                $("#SubmitBtn").show();
+                DisableInputs();
             }
             $("#YetToTransfer").empty();
             var counter = 0;
@@ -541,14 +547,33 @@ function LoadDynamicFeature(eventType, productid) {
             $.each(data, function(key, value) {
 
 
-                $("#YetToTransfer").append("<tr><td>" + (datalength - counter) + "</td><td>" + value.Product.Product_Type.type_name + "</td><td>" + value.Product.product_serial + "</td><td>" + value.tr_count + "</td><td></td><td>" + moment(value.arrival_date).format("h:mm:ss a") + "</td><td>" + $("#Site1 option:selected").text() + "</td><td>" + $("#Site2 option:selected").text() + "</td><td>" + $("#Warehouse1 option:selected").text() + "</td><td>" + $("#Warehouse1 option:selected").text() + "</td><td class=\"hh\"><button   id=\"YetToTransferItemDelete\"  value=\"" + value.id + "\" class=\"btn-icon btn-icon-only btn btn-danger\"><i class=\"icon ion-android-close\"></i></button></td></tr>");
+                $("#YetToTransfer").append("<tr><td>" + (datalength - counter) + "</td><td>" + value.Product.Product_Type.type_name + "</td><td>" + value.Product.product_serial + "</td><td>" + value.tr_count + "</td><td></td><td>" + moment(value.arrival_date).format("h:mm:ss a") + "</td><td>" + $("#Site1 option:selected").text() + "</td><td>" + $("#Site2 option:selected").text() + "</td><td>" + $("#Warehouse1 option:selected").text() + "</td><td>" + $("#Warehouse2 option:selected").text() + "</td><td class=\"hh\"><button   id=\"YetToTransferItemDelete\"  value=\"" + value.id + "\" class=\"btn-icon btn-icon-only btn btn-danger\"><i class=\"icon ion-android-close\"></i></button></td></tr>");
                 counter++;
 
             });
         }
     })
-}
+           
+            if ($("#status").val() == "C") {
+                $("input, button, select").prop('disabled', true)
+                $("#SubmitBtn").hide();
+            }  }
 
+
+        function DisableInputs(){
+
+            $(".OrderArea input,.OrderArea select").prop('disabled', true);
+            $(".From input,.From select").prop('disabled', true);
+            $(".To input,.To select").prop('disabled', true);
+
+        }
+        function EnableInputs() {
+
+            $(".OrderArea input,.OrderArea select").prop('disabled', false);
+            $(".From input,.From select").prop('disabled', false);
+            $(".To input,.To select").prop('disabled', false);
+
+        }
         // Change Events
         var i = 1, j = 2;
         $(document).on("change", "#Company" + i, (function () {
@@ -663,6 +688,10 @@ function LoadDynamicFeature(eventType, productid) {
 
         });
         $("#UpdateBtn").click(function () {
+            DTS.length = 0;
+            VarData.length = 0;
+            Dynamic_Attr.length = 0;
+            Dynamic_AttrTxt.length = 0;
             toastr.options = {
                 "closeButton": true,
                 "debug": false,
@@ -723,6 +752,7 @@ function LoadDynamicFeature(eventType, productid) {
                     contentType: "application/json; charset=utf-8",
                       data: JSON.stringify(postData),
                       success: function (data) {
+                          LoadProducts();
                          // alert(data);
                           Swal.fire('Update','Successfully Update','success')
                       }
@@ -792,9 +822,61 @@ function LoadDynamicFeature(eventType, productid) {
             //alert("hi")
         }
     });
-});
-        // ###########################################################################################
+        });
+        $("#SubmitBtn").click(async function() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
+    for (var i = 0; i < 3; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    const {
+        value: ConfirmationValue
+    } = await Swal.fire({
+        title: 'Enter Below Text to Proceed Transfer',
+        icon: 'info',
+        html: '<h3 style="font-weight: bold">' + text + '</h3>',
+        input: 'text',
+
+        inputValue: '',
+        showCancelButton: false,
+    })
+
+            if (ConfirmationValue == text) {
+
+
+
+                 $.ajax({
+                type: "POST",
+                url: '@Url.Action("SubmitTransfer", "Transfer_Order")',
+                contentType: "application/json;charset=utf-8",
+                     data: JSON.stringify({
+                         id: @Model.id
+                }),
+                success: function(data) {
+                    if (data == "Success") {
+                        Swal.fire(
+                            'Saved!',
+                            'Transfer completed.',
+                            'success'
+                        ).then(function () {
+                            location.replace('@Url.Action("Edit", "Transfer_Order")');
+                        })
+
+                    } else {
+                        Swal.fire(
+                            'Transfer Failed!',
+                            data,
+                            'error'
+                        )
+                    }
+                }
+            })
+
+        Swal.fire('','Saved','success')
+    }
+})
+        // ###########################################################################################
         //var cls = "Company"
         //$(document.body).on("change", "select." + cls + "", function () {
         //    var selectedItems = [];
