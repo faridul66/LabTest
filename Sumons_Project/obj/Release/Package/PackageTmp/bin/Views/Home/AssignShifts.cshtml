@@ -1,0 +1,108 @@
+﻿@model BJProduction.Models.CompanyBranch
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/index.cshtml";
+}
+
+<div class="box box-info">
+    <div class="box-header with-border">
+        <h3 class="box-title">Select Company and Branch</h3>
+    </div>
+    <!-- /.box-header -->
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <!-- form start -->
+        <div class="form-horizontal">
+            <div class="box-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Comp_Number, "Company", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownList("Comp_Number", null, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Branch_Number, "Branch", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @*@Html.DropDownList("MachinesId", null, htmlAttributes: new { @class = "form-control" })*@
+                        <select class="form-control" id="Branch_Number" name="Branch_Number">
+                            <option value="">---- Please Select Branch ----</option>
+
+                        </select>
+                        @Html.ValidationMessageFor(model => model.Branch_Number, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer">
+                @*@Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })*@
+                <button id="submitbtn" type="submit" class="btn btn-success pull-right">Next</button>
+            </div>
+            <!-- /.box-footer -->
+        </div>
+    }
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+@section scripts{
+
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="~/Scripts/Overlayjs.js"></script>
+    <script type="text/javascript">
+        $("#submitbtn").click(function () {
+            $('.form-horizontal').LoadingOverlay("show")
+        });
+        $(document).ready(function () {
+            $('.form-horizontal').LoadingOverlay("hide")
+                var compid = $("#Comp_Number").val();
+            var json = { id: compid }
+                $.ajax({
+                    type: "POST",
+                    //url: "/ProjectReport/GetReportName",
+                    url: '@Url.Action("GetBranch", "Home")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        $("#Branch_Number").empty();
+                        $("#Branch_Number").append("<option value=" + ">" + "---- Please Select Branch ----" + "</option>")
+                        $.each(data, function (key, value) {
+                            $("#Branch_Number").append("<option value=" + value.Branch_Number + ">" + value.BranchName + "</option>")
+                        });
+                      }
+                    });
+        });
+
+        $(document.body).on("change", "#Comp_Number", function () {
+            var compid = $(this).val();
+            if (compid != undefined && compid != '') {
+                var json = { id: compid }
+                $.ajax({
+                    type: "POST",
+                    //url: "/ProjectReport/GetReportName",
+                    url: '@Url.Action("GetBranch", "Home")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        $("#Branch_Number").empty();
+                        $("#Branch_Number").append("<option value=" + ">" + "---- Please Select Branch ----" + "</option>")
+                        $.each(data, function (key, value) {
+                           $("#Branch_Number").append("<option value=" + value.Branch_Number + ">" + value.BranchName + "</option>")
+                        });
+                    }
+                });
+            }
+            });
+    </script>
+}

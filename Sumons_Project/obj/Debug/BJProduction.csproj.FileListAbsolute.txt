@@ -193,3 +193,8 @@ D:\Software Projects\Bang Jin Production Updated\Sumons_Project\obj\Debug\BJProd
 D:\Software Projects\Bang Jin Production Updated\Sumons_Project\obj\Debug\BJProduction.Migrations.TransferExt2.resources
 D:\Software Projects\Bang Jin Production Updated\Sumons_Project\obj\Debug\BJProduction.csproj.AssemblyReference.cache
 D:\Software Projects\Bang Jin Production Updated\Sumons_Project\obj\Debug\BJProduction.Migrations.TransferExt3.resources
+D:\Software Projects\Bang Jin Production Updated\Sumons_Project\obj\Debug\BJProduction.Migrations.SalesProductFeaturesAdded.resources
+D:\Software Projects\Bang Jin Production Updated\Sumons_Project\obj\Debug\BJProduction.Migrations.orderProductFeature.resources
+D:\Software Projects\Bang Jin Production Updated\Sumons_Project\obj\Debug\BJProduction.Migrations.orderIdint.resources
+D:\Software Projects\Bang Jin Production Updated\Sumons_Project\obj\Debug\BJProduction.Migrations.salesext.resources
+D:\Software Projects\Bang Jin Production Updated\Sumons_Project\obj\Debug\BJProduction.Migrations.salesextv2.resources

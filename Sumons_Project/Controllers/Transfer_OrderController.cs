@@ -605,12 +605,14 @@ namespace BJProduction.Controllers
 
         public JsonResult SubmitTransfer(int id)
         {
+            string message;
+            try
+            {
+                Transfer_Order transferOrder = db.Transfer_Order.Find(id);
+                transferOrder.status = "C";
+                db.SaveChanges();
 
-            Transfer_Order transferOrder = db.Transfer_Order.Find(id);
-            transferOrder.status = "C";
-            db.SaveChanges();
-
-                List<int> Transfer_Ledger = db.Transfer_Ledger.Where(x=>x.Transfer_Orderid==id).Select(x => x.id).ToList();
+                List<int> Transfer_Ledger = db.Transfer_Ledger.Where(x => x.Transfer_Orderid == id).Select(x => x.id).ToList();
                 var transTypeId = db.Transaction_Type.FirstOrDefault(x => x.type_code == "TR").id;
                 foreach (var item in Transfer_Ledger)
                 {
@@ -621,11 +623,11 @@ namespace BJProduction.Controllers
                     db.SaveChanges();
 
 
-                 // Find General Ledger ID
+                    // Find General Ledger ID
                     var Products = (
                from a in db.General_Ledger
                join b in db.Purchase_Ledger on a.trans_ref_id equals b.id
-               where a.Transaction_Typeid == 1 && a.is_current == true && a.Productid== ledger.Productid
+               where a.Transaction_Typeid == 1 && a.is_current == true && a.Productid == ledger.Productid
                select new
                {
                    GLID = a.id,
@@ -633,7 +635,7 @@ namespace BJProduction.Controllers
                ).Union(
                from a in db.General_Ledger
                join b in db.Production_Ledger on a.trans_ref_id equals b.id
-             
+
                where a.Transaction_Typeid == 2 && a.is_current == true && a.Productid == ledger.Productid
                select new
                {
@@ -643,12 +645,12 @@ namespace BJProduction.Controllers
                ).Union(
                from a in db.General_Ledger
                join b in db.Transfer_Ledger on a.trans_ref_id equals b.id
-              
+
                where a.Transaction_Typeid == 4 && a.is_current == true && a.Productid == ledger.Productid
                select new
                {
                    GLID = a.id,
-                  
+
                }
                );
 
@@ -671,7 +673,14 @@ namespace BJProduction.Controllers
                     db.SaveChanges();
                 }
 
-            return Json("", JsonRequestBehavior.AllowGet);
+                message = "Success";
+            }
+            catch (Exception ex)
+            {
+                message = "";
+            }
+           
+            return Json(message, JsonRequestBehavior.AllowGet);
         }
         protected override void Dispose(bool disposing)
         {

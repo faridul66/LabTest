@@ -263,6 +263,7 @@ namespace BJProduction.Controllers
             var orderNo = values[0][8][0];
             var lotNumber = values[0][15][0];
             var companyId = Convert.ToInt32(values[0][0][0]);
+            
 
             List<string> missingProducts = new List<string>();
             if (db.Purchase_Ledger.Include(x => x.Purchase_Order).Where(x => x.Purchase_Order.order_no == orderNo && x.lot_number != lotNumber && x.Purchase_Order.Companyid == companyId).ToList().Count != 0)
@@ -273,12 +274,12 @@ namespace BJProduction.Controllers
                 db.SaveChanges();
 
             }
-            if (db.Purchase_Ledger.Include(x => x.Purchase_Order).Where(x => x.Purchase_Order.order_no == orderNo && x.lot_number == lotNumber).ToList().Count != 0)
+            if (db.Purchase_Ledger.Include(x => x.Purchase_Order).Where(x => x.Purchase_Order.order_no == orderNo && x.lot_number == lotNumber && x.Purchase_Order.Companyid == companyId).ToList().Count != 0)
             {
-                var purchaseOrderId = db.Purchase_Ledger.Include(x => x.Purchase_Order).FirstOrDefault(x => x.lot_number == lotNumber && x.Purchase_Order.order_no == orderNo).Purchase_Order.id;
+                var purchaseOrderId = db.Purchase_Ledger.Include(x => x.Purchase_Order).FirstOrDefault(x => x.lot_number == lotNumber && x.Purchase_Order.order_no == orderNo && x.Purchase_Order.Companyid == companyId).Purchase_Order.id;
                 Purchase_Order po = db.Purchase_Order.Find(purchaseOrderId);
 
-                var productId = db.Purchase_Ledger.Include(x => x.Purchase_Order).Where(x => x.lot_number == lotNumber && x.Purchase_Order.order_no == orderNo).Select(x => x.Productid).ToList();
+                var productId = db.Purchase_Ledger.Include(x => x.Purchase_Order).Where(x => x.lot_number == lotNumber && x.Purchase_Order.order_no == orderNo && x.Purchase_Order.Companyid == companyId).Select(x => x.Productid).ToList();
 
                 foreach (var item in productId)
                 {
@@ -317,14 +318,24 @@ namespace BJProduction.Controllers
             purchaseOrder.Unit_Measurementid = Convert.ToInt32(values[0][6][0]);
             purchaseOrder.Locationid = Convert.ToInt32(values[0][7][0]);
             purchaseOrder.order_no = values[0][8][0];
-            purchaseOrder.lc_number = values[0][9][0];
-            purchaseOrder.lc_date = Convert.ToDateTime(values[0][10][0]);
+            purchaseOrder.lc_number = values[0][9][0] ?? "";
+            if (values[0][10][0] =="" || values[0][10][0] == null)
+            {
+            }
+            else if (values[0][10][0] == "Invalid date")
+            {
+
+            }
+            else
+            {
+                purchaseOrder.lc_date = Convert.ToDateTime(values[0][10][0]);
+            }
             purchaseOrder.purchase_date = Convert.ToDateTime(values[0][11][0]);
             purchaseOrder.status = "";
             purchaseOrder.chged_by = UserManager.FindById(User.Identity.GetUserId()).UserName;
             purchaseOrder.chgd_date = DateTime.UtcNow;
 
-            Purchase_Order po1 = db.Purchase_Order.FirstOrDefault(x => x.order_no == orderNo);  // Need to test
+            Purchase_Order po1 = db.Purchase_Order.FirstOrDefault(x => x.order_no == orderNo && x.Companyid== companyId);  // Need to test
             int poid;
             if (po1 == null || po1.status != "C")
             {
@@ -436,9 +447,9 @@ namespace BJProduction.Controllers
                 }
                 var purchaseOrders = db.Purchase_Order.Where(x => x.order_no == purchaseOrder && x.Companyid == companyId).ToList();
                 var productAndPurchaseLedger = db.Purchase_Ledger.Include(x => x.Product).Include(x => x.Purchase_Order).Where(x => x.lot_number == lotNumber && x.Purchase_Order.order_no == purchaseOrder).ToList();
-                var productId = db.Purchase_Ledger.Include(y => y.Product).Include(y => y.Purchase_Order).Where(y => y.lot_number == lotNumber && y.Purchase_Order.order_no == purchaseOrder).FirstOrDefault().Productid;
+                var productId = db.Purchase_Ledger.Include(y => y.Product).Include(y => y.Purchase_Order).Where(y => y.lot_number == lotNumber && y.Purchase_Order.order_no == purchaseOrder && y.Purchase_Order.Companyid==companyId).FirstOrDefault().Productid;
                 var productFeature = db.Product_Feature.Include(x => x.Feature).Include(x => x.Feature.Feature_Type).Where(x => x.Productid == productId).ToList();
-                var warehouseId = db.Purchase_Ledger.Include(x => x.Purchase_Order).Where(x => x.lot_number == lotNumber && x.Purchase_Order.order_no == purchaseOrder).FirstOrDefault().Locationid;
+                var warehouseId = db.Purchase_Ledger.Include(x => x.Purchase_Order).Where(x => x.lot_number == lotNumber && x.Purchase_Order.order_no == purchaseOrder && x.Purchase_Order.Companyid == companyId).FirstOrDefault().Locationid;
                 var warehouse = db.Locations.Where(x => x.id == warehouseId);
                 var orderData = new dynamic[] { messages, purchaseOrders, productAndPurchaseLedger, productFeature, warehouse };
                 return Json(orderData, JsonRequestBehavior.AllowGet);

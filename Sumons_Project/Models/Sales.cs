@@ -33,7 +33,43 @@ namespace BJProduction.Models
         public DateTime chgd_date { get; set; } = DateTime.UtcNow;
     }
 
+    public class SalesProductFeatures
+    {
+        public int Id { get; set; }
+        public string OrderNo { get; set; }
+        public int ProductTypeId { get; set; }
+        public int FeatureTypeId { get; set; }
+        public int FearureId { get; set; }
+        public int? UnitId { get; set; }
+        public double? TxtValue { get; set; }
+        public int CompanyId { get; set; }
+        public string LotNumber { get; set; }
+    }
 
+    public class SalesOrderProductFeature
+    {
+        public int Id { get; set; }
+        public int OrderId { get; set; }
+        public int ProductTypeId { get; set; }
+        public int FeatureTypeId { get; set; }
+        public int FearureId { get; set; }
+        public int? UnitId { get; set; }
+        public double? TxtValue { get; set; }
+        public int CompanyId { get; set; }
+        public string LotNumber { get; set; }
+    }
 
+    public class SalesOrderExt
+    {
+        public int Id { get; set; }
+        public int ProductTypeId { get; set; }
+        public int UnitId { get; set; }
+        public int OrderId { get; set; }
+        public string Lot { get; set; }
+        public DateTime DeliveryDate { get; set; }
+        public int SiteId { get; set; }
+        public int WarehouseId { get; set; }
+        
+    }
 
 }

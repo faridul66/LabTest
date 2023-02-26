@@ -201,6 +201,11 @@ namespace BJProduction.Models
 
         public System.Data.Entity.DbSet<BJProduction.Models.TransferOrderExt> TransferOrderExts { get; set; }
 
+        public System.Data.Entity.DbSet<BJProduction.Models.SalesProductFeatures> SalesProductFeatures { get; set; }
+
+        public System.Data.Entity.DbSet<BJProduction.Models.SalesOrderProductFeature> SalesOrderProductFeatures { get; set; }
+ public System.Data.Entity.DbSet<BJProduction.Models.SalesOrderExt> SalesOrderExts { get; set; }
+
 
 
 
