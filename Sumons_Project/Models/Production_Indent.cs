@@ -15,21 +15,27 @@ namespace BJProduction.Models
         public Product_Type Product_Type { get; set; }
         public int Shiftid { get; set; }
         public Shift Shift { get; set; }
+        [Display(Name = "Estimated Count")]
         public int qty { get; set; }
         public int batch_count { get; set; }
         public int Featureid { get; set; }
         public Feature Feature { get; set; }
+        [Display(Name = "Estimated QTY")]
         public double prod_count { get; set; }
         public int Unit_Measurementid { get; set; }
         public Unit_Measurement Unit_Measurement { get; set; }
+        [Display(Name = "Indent Number")]
         public string indent_no { get; set; }
+        
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yy}")]
+        [Display(Name = "Indent Date")]
         public DateTime indent_date { get; set; }
+        [Display(Name = "Shift Start Time")]
         public DateTime shift_start { get; set; }
         public string status { get; set; }
         public string chged_by { get; set; }
-        public DateTime chgd_date { get; set; } = DateTime.UtcNow;
+        public DateTime chgd_date { get; set; } = DateTime.Now;
 
     }
     public class Product_Indent_Feature

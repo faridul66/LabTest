@@ -106,7 +106,7 @@ namespace BJProduction.Controllers
             string userIdq = User.Identity.GetUserId();
             var user = UserManager.FindById(userIdq);
             string firstname = user.FirstName;
-                return Content(firstname);
+            return Content(firstname);
         }
 
 

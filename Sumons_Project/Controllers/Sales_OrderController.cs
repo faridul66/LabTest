@@ -231,13 +231,13 @@ namespace BJProduction.Controllers
         [Authorize]
         public JsonResult SaveData(string[][][] values)
         {
-            // VarData = [Company_Id, Customer_Id, Product_Type_Id, Total_Count, MainFeature_Id, MainFeature_Value, Main_Unit, Country_Id, Order_No, LC_Number, LC_Date, Sales_Date, Delivery_Date, Site_Id, Warehouse_Id, Lot_Number]
+            // [Company_Id, Customer_Id, Product_Type_Id, Total_Count, MainFeature_Id, MainFeature_Value, Main_Unit, Country_Id, Order_No, Sales_Date, Delivery_Date, Site_Id, Warehouse_Id, Lot_Number]
             int companyId = Convert.ToInt32(values[0][0][0]);
             int customerId= Convert.ToInt32(values[0][1][0]);
             int productTypeId= Convert.ToInt32(values[0][2][0]);
-            double totalCount= Convert.ToInt32(values[0][3][0]);
+            int totalCount= Convert.ToInt32(values[0][3][0]);
             int mainFeatureId= Convert.ToInt32(values[0][4][0]);
-            int mainFeatureValue= Convert.ToInt32(values[0][5][0]);
+            double mainFeatureValue= Convert.ToDouble(values[0][5][0]);
             int mainUnitId= Convert.ToInt32(values[0][6][0]);
             int countryId= Convert.ToInt32(values[0][7][0]); 
             string orderNo= values[0][8][0]; 
@@ -255,8 +255,8 @@ namespace BJProduction.Controllers
             salesOrder.Locationid=countryId;
             salesOrder.order_no=orderNo;
             salesOrder.Product_Typeid=productTypeId;
-            salesOrder.qty=mainFeatureValue;
-            salesOrder.sale_count=totalCount;
+            salesOrder.qty= totalCount;
+            salesOrder.sale_count= mainFeatureValue;
             salesOrder.sell_date=salesDate;
             salesOrder.Unit_Measurementid=mainUnitId;
             salesOrder.status = "";
@@ -362,15 +362,108 @@ namespace BJProduction.Controllers
 
 
 
+        public JsonResult UpdateData(string[][][] values)
+        {
+            // [Company_Id, Customer_Id, Product_Type_Id, Total_Count, MainFeature_Id, MainFeature_Value, Main_Unit, Country_Id, Order_No, Sales_Date, Delivery_Date, Site_Id, Warehouse_Id, Lot_Number,OrderId]
+
+            int orderId = Convert.ToInt32(values[0][14][0]);
+            int companyId = Convert.ToInt32(values[0][0][0]);
+            int customerId = Convert.ToInt32(values[0][1][0]);
+            int productTypeId = Convert.ToInt32(values[0][2][0]);
+            int totalCount = Convert.ToInt32(values[0][3][0]);
+            int mainFeatureId = Convert.ToInt32(values[0][4][0]);
+            double mainFeatureValue = Convert.ToDouble(values[0][5][0]);
+            int mainUnitId = Convert.ToInt32(values[0][6][0]);
+            int countryId = Convert.ToInt32(values[0][7][0]);
+            string orderNo = values[0][8][0];
+            DateTime salesDate = Convert.ToDateTime(values[0][9][0]);
+            DateTime deliveryDate = Convert.ToDateTime(values[0][10][0]);
+            int siteId = Convert.ToInt32(values[0][11][0]);
+            int warehouseId = Convert.ToInt32(values[0][12][0]);
+            string lotNumber = values[0][13][0];
+
+
+            Sales_Order salesOrder = db.Sales_Order.Find(orderId);
+            salesOrder.Companyid = companyId;
+            salesOrder.Customerid = customerId;
+            salesOrder.Featureid = mainFeatureId;
+            salesOrder.Locationid = countryId;
+            salesOrder.order_no = orderNo;
+            salesOrder.Product_Typeid = productTypeId;
+            salesOrder.qty = totalCount;
+            salesOrder.sale_count = mainFeatureValue;
+            salesOrder.sell_date = salesDate;
+            salesOrder.Unit_Measurementid = mainUnitId;
+            salesOrder.status = "";
+            salesOrder.chged_by = UserManager.FindById(User.Identity.GetUserId()).UserName;
+            salesOrder.chgd_date = DateTime.UtcNow;
+            db.SaveChanges();
+
+
+                
+            SalesOrderExt salesOrderExt = db.SalesOrderExts.Find(db.SalesOrderExts.FirstOrDefault(x => x.OrderId == orderId).Id);
+            salesOrderExt.ProductTypeId = productTypeId;
+            salesOrderExt.UnitId = mainUnitId;
+            salesOrderExt.OrderId = salesOrder.id;
+            salesOrderExt.DeliveryDate = deliveryDate;
+            salesOrderExt.SiteId = siteId;
+            salesOrderExt.WarehouseId = warehouseId;
+            salesOrderExt.Lot = lotNumber;
+            db.SaveChanges();
+
+
+            var salesOrderProductFeatures = db.SalesOrderProductFeatures.Where(x => x.OrderId == orderId);
+            db.SalesOrderProductFeatures.RemoveRange(salesOrderProductFeatures);
+            db.SaveChanges();
+
+
+
+            for (int i = 0; i < values[1].Length; i++)
+            {
+                SalesOrderProductFeature salesOrderProductFeature = new SalesOrderProductFeature();
+                salesOrderProductFeature.OrderId = salesOrder.id;
+                salesOrderProductFeature.ProductTypeId = productTypeId;
+                salesOrderProductFeature.FeatureTypeId = Convert.ToInt32(values[1][i][0]);
+                salesOrderProductFeature.FearureId = Convert.ToInt32(values[1][i][1]);
+                salesOrderProductFeature.CompanyId = companyId;
+                salesOrderProductFeature.LotNumber = lotNumber;
+                //transferProductFeatures.UnitId == 0;
+                //transferProductFeatures.TxtValue = 0;
+                db.SalesOrderProductFeatures.Add(salesOrderProductFeature);
+                db.SaveChanges();
+            }
+
+            for (int i = 0; i < values[2].Length; i++)
+            {
+                SalesOrderProductFeature salesOrderProductFeature = new SalesOrderProductFeature();
+                salesOrderProductFeature.OrderId = salesOrder.id;
+                salesOrderProductFeature.ProductTypeId = productTypeId;
+                salesOrderProductFeature.FeatureTypeId = Convert.ToInt32(values[2][0][0]);
+                salesOrderProductFeature.FearureId = db.Features
+                    .FirstOrDefault(x => x.Feature_Typeid == salesOrderProductFeature.FeatureTypeId).id;
+                salesOrderProductFeature.UnitId = Convert.ToInt32(values[2][0][2]);
+                salesOrderProductFeature.TxtValue = Convert.ToInt32(values[2][0][1]);
+                salesOrderProductFeature.CompanyId = companyId;
+                salesOrderProductFeature.LotNumber = lotNumber;
+                db.SalesOrderProductFeatures.Add(salesOrderProductFeature);
+                db.SaveChanges();
+            }
+
+
+            return Json(salesOrder.id, JsonRequestBehavior.AllowGet);
+        }
+
+
+
+
         [Authorize]
         [HttpPost]
         public JsonResult SubmitData(string[] values)
         {
-            var orderNo = values[0];
+            int orderId = Convert.ToInt32(values[0]);
             var lotNumber = values[1];
             var transTypeId = db.Transaction_Type.FirstOrDefault(x => x.type_code == "SO").id;
-            var orderId = db.Sales_Order.FirstOrDefault(x => x.order_no == orderNo).id;
-            List<int> salesLedger = db.Sales_Ledger.Include(x => x.Sales_Order).Where(x => x.Sales_Order.order_no == orderNo && x.lot_number == lotNumber).Select(x => x.id).ToList();
+            List<int> salesLedger = db.Sales_Ledger.Where(x => x.Sales_Orderid == orderId && x.lot_number == lotNumber).Select(x => x.id).ToList();
             foreach (var items in salesLedger)
             {
                 var ledger = db.Sales_Ledger.Find(items);
@@ -435,6 +528,200 @@ namespace BJProduction.Controllers
             return Json("", JsonRequestBehavior.AllowGet);
         }
 
+
+        public JsonResult GetFeatures(int id)
+        {
+            var featurs = db.SalesOrderProductFeatures
+                .Join(db.Feature_Type, a => a.FeatureTypeId, b => b.id, (a, b) => new { a, b })
+                .Where(x => x.a.OrderId == id);
+            return Json(featurs.ToArray(), JsonRequestBehavior.AllowGet);
+        }
+
+
+      
+
+        public JsonResult GetSalesOrderInfo(int id)
+        {
+            var salesOrderExts = db.SalesOrderExts.Where(x => x.OrderId == id);
+            return Json(salesOrderExts.ToArray(), JsonRequestBehavior.AllowGet);
+        }
+
+
+
+
+        public JsonResult GetProducts(int[] values)
+        {
+            int orderId = values[0];
+            int productTypeId = values[1];
+            int companyId = values[2];
+
+            int wareHouseId = db.SalesOrderExts.FirstOrDefault(x=>x.OrderId==orderId).WarehouseId;
+
+            var Products = (
+                from a in db.General_Ledger
+                join b in db.Purchase_Ledger on a.trans_ref_id equals b.id
+                join c in db.Purchase_Order on b.Purchase_Orderid equals c.id
+                join d in db.Products on a.Productid equals d.id
+                join e in db.Product_Type on d.Product_Typeid equals e.id
+                where a.Transaction_Typeid == 1 && a.is_current == true
+                select new
+                {
+                    GLID = a.id,
+                    CompanyId = c.Companyid,
+                    WarehouseId = b.Locationid,
+                    Product = e.type_name,
+                    ProductTypeId = d.Product_Typeid,
+                    ProductId = a.Productid,
+                    QTY = b.pur_count,
+                    Serial = d.product_serial,
+                    UnitId = c.Unit_Measurementid
+                }
+            ).Union(
+                from a in db.General_Ledger
+                join b in db.Production_Ledger on a.trans_ref_id equals b.id
+                join c in db.Production_Indent on b.Production_Indentid equals c.id
+                join d in db.Products on a.Productid equals d.id
+                join e in db.Product_Type on d.Product_Typeid equals e.id
+                join f in db.Machines on c.Machineid equals f.id
+                where a.Transaction_Typeid == 2 && a.is_current == true
+                select new
+                {
+                    GLID = a.id,
+                    CompanyId = f.Companyid,
+                    WarehouseId = b.Locationid,
+                    Product = e.type_name,
+                    ProductTypeId = d.Product_Typeid,
+                    ProductId = a.Productid,
+                    QTY = b.prod_count,
+                    Serial = d.product_serial,
+                    UnitId = c.Unit_Measurementid
+
+                }
+            ).Union(
+                from a in db.General_Ledger
+                join b in db.Transfer_Ledger on a.trans_ref_id equals b.id
+                join c in db.Transfer_Order on b.Transfer_Orderid equals c.id
+                join d in db.Products on a.Productid equals d.id
+                join e in db.Product_Type on d.Product_Typeid equals e.id
+                where a.Transaction_Typeid == 4 && a.is_current == true
+                select new
+                {
+                    GLID = a.id,
+                    CompanyId = c.to_company_id,
+                    WarehouseId = b.Locationid,
+                    Product = e.type_name,
+                    ProductTypeId = d.Product_Typeid,
+                    ProductId = a.Productid,
+                    QTY = b.tr_count,
+                    Serial = d.product_serial,
+                    UnitId = c.Unit_Measurementid
+                }
+            );
+
+            var p = Products.ToList();
+
+            var productsToExclude =
+                (from a in db.Consumption_Ledger
+                 join b in db.Products on a.Productid equals b.id
+                 where b.Product_Typeid == productTypeId
+                 select a.Productid).Union(
+                    from a in db.Sales_Ledger
+                    join b in db.Products on a.Productid equals b.id
+                    where b.Product_Typeid == productTypeId
+                    select a.Productid).Union(
+                    from a in db.Transfer_Ledger
+                    join b in db.Products on a.Productid equals b.id
+                    where b.Product_Typeid == productTypeId && a.status != "C"
+                    select a.Productid).ToList();
+            var TempList = Products.Where(x => !productsToExclude.Contains(x.ProductId) && x.CompanyId == companyId && x.WarehouseId == wareHouseId);
+
+
+            var orderFeatures = db.SalesOrderProductFeatures
+                .Where(tpf => tpf.OrderId == orderId)
+                .Select(tpf => new ProductFeatureList
+                {
+                    FeatureTypeId = tpf.FeatureTypeId,
+                    FeatureId = tpf.FearureId,
+                    Value = tpf.TxtValue ?? 0,
+                    UnitId = tpf.UnitId ?? 0
+                }).ToList();
+
+            List<int> tempProductIdList = TempList.Select(x => x.ProductId).ToList();
+
+            for (int i = 0; i < tempProductIdList.Count; i++)
+            {
+                int productId = tempProductIdList[i];
+                var productFeatures = db.Product_Feature
+                    .Where(pf => pf.Productid == productId)
+                    .Join(db.Features, pf => pf.Featureid, f => f.id, (pf, f) => new { Feature = f, ProductFeature = pf })
+                    .Join(db.Feature_Type, x => x.Feature.Feature_Typeid, ft => ft.id, (x, ft) => new { Feature = x.Feature, ProductFeature = x.ProductFeature, FeatureType = ft })
+                    .Select(x => new ProductFeatureList
+                    {
+                        FeatureTypeId = x.FeatureType.id,
+                        FeatureId = x.ProductFeature.Featureid,
+                        Value = x.ProductFeature.Value,
+                        UnitId = x.ProductFeature.Unit_Measurementid ?? 0
+                    }).ToList();
+
+                bool areEqual = orderFeatures.Count == productFeatures.Count
+                                && orderFeatures.SelectMany(x => new[] { x.FeatureTypeId, x.FeatureId, x.Value, x.UnitId })
+                                    .SequenceEqual(productFeatures.SelectMany(x => new[] { x.FeatureTypeId, x.FeatureId, x.Value, x.UnitId }));
+
+
+                if (!areEqual)
+                {
+                    TempList = TempList.Where(x => x.ProductId != productId);
+                }
+            }
+            return Json(TempList, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult SendToLedger(string[][] values)
+        {
+            // values items =  productId,  QTY,  transferOrderId, toWareHouseId 
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                Sales_Ledger salesLedger = new Sales_Ledger();
+                salesLedger.Productid = Convert.ToInt32(values[i][0]);
+                salesLedger.sale_count = Convert.ToDouble(values[i][1]);
+                salesLedger.Sales_Orderid = Convert.ToInt32(values[i][2]);
+                salesLedger.Locationid = Convert.ToInt32(values[i][3]);
+                salesLedger.delivery_date = DateTime.Now;
+                salesLedger.status = "";
+                salesLedger.chged_by = UserManager.FindById(User.Identity.GetUserId()).UserName;
+                salesLedger.chgd_date = DateTime.UtcNow;
+                db.Sales_Ledger.Add(salesLedger);
+                db.SaveChanges();
+            }
+
+
+            return Json("", JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult YetToSaleItems(int id)
+        {
+            var products = db.Sales_Ledger.Include(x => x.Product).Include(x => x.Product.Product_Type)
+                .Where(x => x.Sales_Orderid == id);
+            return Json(products, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public JsonResult DeleteYetToSale(int id)
+        {
+            string message;
+            try
+            {
+                Sales_Ledger salesLedger = db.Sales_Ledger.Find(id);
+                db.Sales_Ledger.Remove(salesLedger);
+                db.SaveChanges();
+                message = "Success";
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+            }
+
+            return Json(message, JsonRequestBehavior.AllowGet);
+        }
 
 
         protected override void Dispose(bool disposing)

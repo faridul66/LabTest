@@ -511,7 +511,10 @@ $(document.body).on("change", "#Sites", function() {
 $(document.body).on("change", "#Machines", function() {
     LoadProductType($(this).val());
 });
+        $(document).on("change", "#Product_Typeid", (function () {
+            LoadDynamicFeature($(this).val());
 
+        }))
 $("#Shiftid").change(function() {
     $("#duration").html(GetShiftDuration($(this).val()) + " Hours");
     if (moment($("#StartTime").val()).isValid()) {

@@ -175,6 +175,19 @@
     <Content Include="CodeTemplates\PackageVersions5.2.4.xml" />
     <Content Include="CodeTemplates\PackageVersions5.2.6.xml" />
     <Content Include="CodeTemplates\PackageVersions5.2.7.xml" />
+    <Content Include="Content\assets\css\demo.css" />
+    <Content Include="Content\assets\css\fresh-bootstrap-table.css" />
+    <Content Include="Content\assets\img\bg.jpg" />
+    <Content Include="Content\assets\img\compact.jpg" />
+    <Content Include="Content\assets\img\favicon.ico" />
+    <Content Include="Content\assets\img\full.jpg" />
+    <Content Include="Content\assets\img\mask.png" />
+    <Content Include="Content\assets\img\new_logo.png" />
+    <Content Include="Content\assets\js\demo\demo.js" />
+    <Content Include="Content\assets\js\demo\gsdk-switch.js" />
+    <Content Include="Content\assets\js\demo\jquery.sharrre.js" />
+    <Content Include="Content\Theme\assets\images\logo-inverse.png" />
+    <Content Include="Images\Logo\Logo.png" />
     <Content Include="Content\bootstrap-datetimepicker.css" />
     <Content Include="Content\bootstrap-grid.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -490,7 +503,29 @@
     <Content Include="Content\Theme\assets\images\flagkit-svg\ZA.svg" />
     <Content Include="Content\Theme\assets\images\flagkit-svg\ZM.svg" />
     <Content Include="Content\Theme\assets\images\flagkit-svg\ZW.svg" />
-    <Content Include="Content\Theme\assets\images\logo-inverse.png" />
+    <Content Include="Content\assets\css\fresh-bootstrap-table.css.map" />
+    <Content Include="Content\assets\sass\fbt\mixins\_buttons.scss" />
+    <Content Include="Content\assets\sass\fbt\mixins\_cards.scss" />
+    <Content Include="Content\assets\sass\fbt\mixins\_icons.scss" />
+    <Content Include="Content\assets\sass\fbt\mixins\_inputs.scss" />
+    <Content Include="Content\assets\sass\fbt\mixins\_labels.scss" />
+    <Content Include="Content\assets\sass\fbt\mixins\_morphing-buttons.scss" />
+    <Content Include="Content\assets\sass\fbt\mixins\_navbars.scss" />
+    <Content Include="Content\assets\sass\fbt\mixins\_social-buttons.scss" />
+    <Content Include="Content\assets\sass\fbt\mixins\_tabs.scss" />
+    <Content Include="Content\assets\sass\fbt\mixins\_transparency.scss" />
+    <Content Include="Content\assets\sass\fbt\mixins\_vendor-prefixes.scss" />
+    <Content Include="Content\assets\sass\fbt\_bootstrap-table-base.scss" />
+    <Content Include="Content\assets\sass\fbt\_buttons.scss" />
+    <Content Include="Content\assets\sass\fbt\_dropdown.scss" />
+    <Content Include="Content\assets\sass\fbt\_fresh-bootstrap-table.scss" />
+    <Content Include="Content\assets\sass\fbt\_inputs.scss" />
+    <Content Include="Content\assets\sass\fbt\_misc.scss" />
+    <Content Include="Content\assets\sass\fbt\_mixins.scss" />
+    <Content Include="Content\assets\sass\fbt\_typography.scss" />
+    <Content Include="Content\assets\sass\fbt\_variables.scss" />
+    <Content Include="Content\assets\sass\fresh-bootstrap-table.scss" />
+    <None Include="Content\Theme\assets\images\logo-inverse.pngx" />
     <Content Include="Content\Theme\assets\images\logo.png" />
     <Content Include="Content\Theme\assets\images\originals\abstract.jpg" />
     <Content Include="Content\Theme\assets\images\originals\abstract2.jpg" />
@@ -870,6 +905,7 @@
     <None Include="Scripts\jquery.validate-vsdoc.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Content Include="Scripts\jquery.number.min.js" />
     <Content Include="Scripts\jquery.validate.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -979,6 +1015,8 @@
     <Content Include="Views\OrderProductFeatures\Details.cshtml" />
     <Content Include="Views\OrderProductFeatures\Edit.cshtml" />
     <Content Include="Views\OrderProductFeatures\Index.cshtml" />
+    <Content Include="Views\Production_Indent\Index - Copy.cshtml" />
+    <Content Include="Views\Production_Indent\Index.cshtml" />
     <None Include="Views\Purchase_Order\index_.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\RolesAdmin\Index.cshtml" />
@@ -1056,7 +1094,7 @@
     <Content Include="Views\Production_Indent\Delete.cshtml" />
     <Content Include="Views\Production_Indent\Details.cshtml" />
     <Content Include="Views\Production_Indent\Edit.cshtml" />
-    <Content Include="Views\Production_Indent\Index.cshtml" />
+    <None Include="Views\Production_Indent\Index.cshtmlS" />
     <Content Include="Views\Consumption_Ledger\Create.cshtml" />
     <Content Include="Views\Consumption_Ledger\Delete.cshtml" />
     <Content Include="Views\Consumption_Ledger\Details.cshtml" />
@@ -1151,11 +1189,6 @@
     <Content Include="Views\UsersAdmin\Create.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Users\A.cshtml" />
-    <Content Include="Views\Vendors\Create.cshtml" />
-    <Content Include="Views\Vendors\Delete.cshtml" />
-    <Content Include="Views\Vendors\Details.cshtml" />
-    <Content Include="Views\Vendors\Edit.cshtml" />
-    <Content Include="Views\Vendors\Index.cshtml" />
     <Content Include="Views\Transaction_Type\Create.cshtml" />
     <Content Include="Views\Transaction_Type\Delete.cshtml" />
     <Content Include="Views\Transaction_Type\Details.cshtml" />
@@ -1204,6 +1237,11 @@
     <Content Include="Views\TransferOrderExts\Details.cshtml" />
     <Content Include="Views\TransferOrderExts\Edit.cshtml" />
     <Content Include="Views\TransferOrderExts\Index.cshtml" />
+    <Content Include="Views\Vendors\Create.cshtml" />
+    <Content Include="Views\Vendors\Delete.cshtml" />
+    <Content Include="Views\Vendors\Details.cshtml" />
+    <Content Include="Views\Vendors\Edit.cshtml" />
+    <Content Include="Views\Vendors\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1307,6 +1345,7 @@
     <Compile Include="Controllers\Transfer_OrderController.cs" />
     <Compile Include="Controllers\Unit_MeasurementController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
+    <None Include="Controllers\VendorsController.bak" />
     <Compile Include="Controllers\VendorsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -1583,6 +1622,10 @@
     <Compile Include="Migrations\202302242130153_salesextv2.designer.cs">
       <DependentUpon>202302242130153_salesextv2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202303020512401_dateupdatedDatetimeNow.cs" />
+    <Compile Include="Migrations\202303020512401_dateupdatedDatetimeNow.designer.cs">
+      <DependentUpon>202303020512401_dateupdatedDatetimeNow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminViewModel.cs" />
@@ -1822,6 +1865,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202302242130153_salesextv2.resx">
       <DependentUpon>202302242130153_salesextv2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303020512401_dateupdatedDatetimeNow.resx">
+      <DependentUpon>202303020512401_dateupdatedDatetimeNow.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

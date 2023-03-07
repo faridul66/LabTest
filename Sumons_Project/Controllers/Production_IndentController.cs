@@ -112,7 +112,7 @@ namespace BJProduction.Controllers
             ViewBag.Featureid = new SelectList(db.Features, "id", "feature_code", production_Indent.Featureid);
             ViewBag.Machineid = new SelectList(db.Machines, "id", "name", production_Indent.Machineid);
             ViewBag.Product_Typeid = new SelectList(db.Product_Type, "id", "type_name", production_Indent.Product_Typeid);
-            ViewBag.Shiftid = new SelectList(db.Shifts, "id", "shift_code", production_Indent.Shiftid);
+            ViewBag.Shiftid = new SelectList(db.Shifts, "id", "name", production_Indent.Shiftid);
             ViewBag.Unit_Measurementid = new SelectList(db.Unit_Measurement, "id", "code", production_Indent.Unit_Measurementid);
             return View(production_Indent);
         }
@@ -133,7 +133,7 @@ namespace BJProduction.Controllers
             ViewBag.Featureid = new SelectList(db.Features, "id", "feature_code", production_Indent.Featureid);
             ViewBag.Machineid = new SelectList(db.Machines, "id", "name", production_Indent.Machineid);
             ViewBag.Product_Typeid = new SelectList(db.Product_Type, "id", "type_code", production_Indent.Product_Typeid);
-            ViewBag.Shiftid = new SelectList(db.Shifts, "id", "shift_code", production_Indent.Shiftid);
+            ViewBag.Shiftid = new SelectList(db.Shifts, "id", "name", production_Indent.Shiftid);
             ViewBag.Unit_Measurementid = new SelectList(db.Unit_Measurement, "id", "code", production_Indent.Unit_Measurementid);
             return View(production_Indent);
         }
@@ -182,7 +182,7 @@ namespace BJProduction.Controllers
             production_Indent.Unit_Measurementid = Convert.ToInt32(values[0][10][0]);
             production_Indent.status = "";
             production_Indent.chged_by = UserManager.FindById(User.Identity.GetUserId()).UserName;
-            production_Indent.chgd_date = DateTime.UtcNow;
+            production_Indent.chgd_date = DateTime.Now;
             db.Production_Indent.Add(production_Indent);
             db.SaveChanges();
             var productionIndentId = production_Indent.id;
@@ -231,7 +231,7 @@ namespace BJProduction.Controllers
             production_Indent.Unit_Measurementid = Convert.ToInt32(values[0][10][0]);
             production_Indent.status = "";
             production_Indent.chged_by = UserManager.FindById(User.Identity.GetUserId()).UserName;
-            production_Indent.chgd_date = DateTime.UtcNow;
+            production_Indent.chgd_date = DateTime.Now;
             //db.Production_Indent.Add(production_Indent);
             db.SaveChanges();
 
@@ -290,9 +290,14 @@ namespace BJProduction.Controllers
 
         public JsonResult PrintandSave(string[] values)
         {
+            
             Product product = new Product();
             product.Product_Typeid = Convert.ToInt32(values[1]);
-            product.product_serial = Convert.ToInt32(values[3]) + DateTime.Now.ToString("MMddyyhhmmss");
+            product.product_serial = GetNextSerialNumber(Convert.ToInt32(values[4]), Convert.ToInt32(values[5])); ;
+            //product.product_serial = Convert.ToInt32(values[3]) + DateTime.Now.ToString("MMddyyhhmmss");
+            product.status = "";
+            product.chged_by = UserManager.FindById(User.Identity.GetUserId()).UserName;
+            product.chgd_date = DateTime.Now;
             db.Products.Add(product);
             db.SaveChanges();
 
@@ -302,6 +307,9 @@ namespace BJProduction.Controllers
             productionLedger.Production_Indentid = Convert.ToInt32(values[0]);
             productionLedger.Locationid = Convert.ToInt32(values[3]);
             productionLedger.production_date = DateTime.Now;
+            productionLedger.status = "";
+            productionLedger.chged_by = UserManager.FindById(User.Identity.GetUserId()).UserName;
+            productionLedger.chgd_date = DateTime.Now;
             db.Production_Ledger.Add(productionLedger);
             db.SaveChanges();
 
@@ -315,7 +323,7 @@ namespace BJProduction.Controllers
                 product_Feature.Value = Convert.ToInt32(productIndentFeatures[i].FeatureValue);
                 product_Feature.Unit_Measurementid = productIndentFeatures[i].Unit_Measurementid;
                 product_Feature.status = "";
-                product_Feature.chgd_date = DateTime.UtcNow;
+                product_Feature.chgd_date = DateTime.Now;
                 product_Feature.chged_by = UserManager.FindById(User.Identity.GetUserId()).UserName;
                 db.Product_Feature.Add(product_Feature);
                 db.SaveChanges();
@@ -736,6 +744,60 @@ namespace BJProduction.Controllers
                 }).Where(x => x.ProductionIndentId == id).ToList();
             return Json(residuals, JsonRequestBehavior.AllowGet);
         }
+
+
+        
+
+        public string GetNextSerialNumber(int machineid, int shiftid)
+        {
+       
+            // Get the current date and machine ID
+            DateTime currentDate = DateTime.Now;
+            int machineId = machineid;
+
+            // Get the last generated serial number for the current date and machine
+            string datePrefix = currentDate.ToString("yyMMdd");
+            string machineCode = machineId.ToString("00");
+
+
+            var lastSerialNumber = db.Products
+                .Where(s => s.product_serial.StartsWith(datePrefix + machineCode ))
+                .OrderByDescending(s => s.chgd_date)
+                .FirstOrDefault();
+            string nextSerialNumber;
+            if (lastSerialNumber != null && lastSerialNumber.product_serial.Length==11)
+            {
+                // If a serial number exists, extract the sequence number and increment it by one to get the next serial number
+                int lastSerialNumberValue = int.Parse(lastSerialNumber.product_serial.Substring(8));
+                int nextSerialNumberValue = lastSerialNumberValue + 1;
+                nextSerialNumber = datePrefix + machineCode  + nextSerialNumberValue.ToString("000");
+                //lastSerialNumber.product_serial = nextSerialNumber;
+            }
+            else
+            {
+                // If no serial number exists for the current date and machine, start from 1
+                nextSerialNumber = datePrefix + machineCode + "001";
+               
+            }
+
+           
+
+            return nextSerialNumber;
+        }
+
+        public JsonResult ProducedItemCount()
+        {
+            return Json(db.Production_Ledger.GroupBy(a => a.Production_Indentid).Select(b => new { ProductCount = b.Count(), ProdCountSum = b.Sum(a => a.prod_count), ProductionIndentId = b.Key }), JsonRequestBehavior.AllowGet);
+        }
+
+        //public JsonResult getsl(int[] values)
+        //{
+        //    int mc = values[0];
+        //    int sc = values[1];
+        //    var sl = GetNextSerialNumber(mc, sc);
+        //    return Json("", JsonRequestBehavior.AllowGet);
+        //} 
+
 
         protected override void Dispose(bool disposing)
         {

@@ -23,7 +23,7 @@ namespace BJProduction.Models
         public string lot_number { get; set; }
         public string status { get; set; }
         public string chged_by { get; set; }
-        public DateTime chgd_date { get; set; } = DateTime.UtcNow;
+        public DateTime chgd_date { get; set; } = DateTime.Now;
 
     }
 
@@ -41,7 +41,7 @@ namespace BJProduction.Models
         public Purchase_Order Purchase_Order { get; set; }
         public string status { get; set; }
         public string chged_by { get; set; }
-        public DateTime chgd_date { get; set; } = DateTime.UtcNow;
+        public DateTime chgd_date { get; set; } = DateTime.Now;
 
     }
     public class Consumption_Ledger
@@ -57,7 +57,7 @@ namespace BJProduction.Models
         public DateTime consumption_date { get; set; }
         public string status { get; set; }
         public string chged_by { get; set; }
-        public DateTime chgd_date { get; set; } = DateTime.UtcNow;
+        public DateTime chgd_date { get; set; } = DateTime.Now;
 
     }
     public class Production_Ledger
@@ -73,7 +73,7 @@ namespace BJProduction.Models
         public DateTime production_date { get; set; }
         public string status { get; set; }
         public string chged_by { get; set; }
-        public DateTime chgd_date { get; set; } = DateTime.UtcNow;
+        public DateTime chgd_date { get; set; } = DateTime.Now;
 
     }
 
@@ -89,7 +89,7 @@ namespace BJProduction.Models
         public bool is_current { get; set; }
         public string status { get; set; }
         public string chged_by { get; set; }
-        public DateTime chgd_date { get; set; } = DateTime.UtcNow;
+        public DateTime chgd_date { get; set; } = DateTime.Now;
 
     }
 
@@ -106,7 +106,7 @@ namespace BJProduction.Models
         public DateTime arrival_date { get; set; }
         public string status { get; set; }
         public string chged_by { get; set; }
-        public DateTime chgd_date { get; set; } = DateTime.UtcNow;
+        public DateTime chgd_date { get; set; } = DateTime.Now;
 
     }
 

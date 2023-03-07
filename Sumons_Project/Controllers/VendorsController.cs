@@ -7,19 +7,16 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using BJProduction.Models;
-
 namespace BJProduction.Controllers
 {
     public class VendorsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-
         // GET: Vendors
         public ActionResult Index()
         {
             return View(db.Vendors.ToList());
         }
-
         // GET: Vendors/Details/5
         public ActionResult Details(int? id)
         {
@@ -46,7 +43,7 @@ namespace BJProduction.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,code,name,phone,email,address,status,chged_by,chged_datetime")] Vendor vendor)
+        public ActionResult Create([Bind(Include = "id,code,name,phone,email,address,status,chged_by,chgd_date")] Vendor vendor)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +75,7 @@ namespace BJProduction.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,code,name,phone,email,address,status,chged_by,chged_datetime")] Vendor vendor)
+        public ActionResult Edit([Bind(Include = "id,code,name,phone,email,address,status,chged_by,chgd_date")] Vendor vendor)
         {
             if (ModelState.IsValid)
             {

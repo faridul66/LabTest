@@ -240,47 +240,6 @@ namespace BJProduction.Controllers
             }
 
 
-            //Production_Indent production_Indent = new Production_Indent();
-            //production_Indent.Machineid = Convert.ToInt32(values[0][0][0]);
-            //production_Indent.Shiftid = Convert.ToInt32(values[0][1][0]);
-            //production_Indent.qty = Convert.ToInt32(values[0][2][0]);
-            //production_Indent.batch_count = Convert.ToInt32(values[0][3][0]);
-            //production_Indent.indent_no = values[0][4][0];
-            //production_Indent.indent_date = Convert.ToDateTime(values[0][5][0]);
-            //production_Indent.shift_start = Convert.ToDateTime(values[0][6][0]);
-            //production_Indent.Product_Typeid = Convert.ToInt32(values[0][7][0]);
-            //production_Indent.Featureid = Convert.ToInt32(values[0][8][0]);
-            //production_Indent.prod_count = Convert.ToInt32(values[0][9][0]);
-            //production_Indent.Unit_Measurementid = Convert.ToInt32(values[0][10][0]);
-            //production_Indent.status = "";
-            //production_Indent.chged_by = UserManager.FindById(User.Identity.GetUserId()).UserName;
-            //production_Indent.chgd_date = DateTime.UtcNow;
-            //db.Production_Indent.Add(production_Indent);
-            //db.SaveChanges();
-            //var productionIndentId = production_Indent.id;
-            //for (int i = 0; i < values[1].Length; i++)
-            //{
-            //    Product_Indent_Feature product_Indent_Feature = new Product_Indent_Feature();
-            //    product_Indent_Feature.Production_Indentid = productionIndentId;
-            //    product_Indent_Feature.Feature_Typeid = Convert.ToInt32(values[1][i][0]);
-            //    product_Indent_Feature.Featureid = Convert.ToInt32(values[1][i][1]);
-            //    db.Product_Indent_Feature.Add(product_Indent_Feature);
-            //    db.SaveChanges();
-            //}
-            //for (int i = 0; i < values[2].Length; i++)
-            //{
-
-            //    Product_Indent_Feature product_Indent_Feature = new Product_Indent_Feature();
-            //    product_Indent_Feature.Production_Indentid = productionIndentId;
-            //    product_Indent_Feature.Feature_Typeid = Convert.ToInt32(values[2][i][0]);
-            //    product_Indent_Feature.FeatureValue = Convert.ToInt32(values[2][i][1]);
-            //    product_Indent_Feature.Unit_Measurementid = Convert.ToInt32(values[2][i][2]);
-            //    product_Indent_Feature.Featureid = db.Features.Where(x => x.Feature_Typeid == product_Indent_Feature.Feature_Typeid).FirstOrDefault().id;
-            //    db.Product_Indent_Feature.Add(product_Indent_Feature);
-            //    db.SaveChanges();
-
-
-            //}
 
             return Json(transfer_Order.id, JsonRequestBehavior.AllowGet);
         }
@@ -362,47 +321,7 @@ namespace BJProduction.Controllers
             }
 
 
-            //Production_Indent production_Indent = new Production_Indent();
-            //production_Indent.Machineid = Convert.ToInt32(values[0][0][0]);
-            //production_Indent.Shiftid = Convert.ToInt32(values[0][1][0]);
-            //production_Indent.qty = Convert.ToInt32(values[0][2][0]);
-            //production_Indent.batch_count = Convert.ToInt32(values[0][3][0]);
-            //production_Indent.indent_no = values[0][4][0];
-            //production_Indent.indent_date = Convert.ToDateTime(values[0][5][0]);
-            //production_Indent.shift_start = Convert.ToDateTime(values[0][6][0]);
-            //production_Indent.Product_Typeid = Convert.ToInt32(values[0][7][0]);
-            //production_Indent.Featureid = Convert.ToInt32(values[0][8][0]);
-            //production_Indent.prod_count = Convert.ToInt32(values[0][9][0]);
-            //production_Indent.Unit_Measurementid = Convert.ToInt32(values[0][10][0]);
-            //production_Indent.status = "";
-            //production_Indent.chged_by = UserManager.FindById(User.Identity.GetUserId()).UserName;
-            //production_Indent.chgd_date = DateTime.UtcNow;
-            //db.Production_Indent.Add(production_Indent);
-            //db.SaveChanges();
-            //var productionIndentId = production_Indent.id;
-            //for (int i = 0; i < values[1].Length; i++)
-            //{
-            //    Product_Indent_Feature product_Indent_Feature = new Product_Indent_Feature();
-            //    product_Indent_Feature.Production_Indentid = productionIndentId;
-            //    product_Indent_Feature.Feature_Typeid = Convert.ToInt32(values[1][i][0]);
-            //    product_Indent_Feature.Featureid = Convert.ToInt32(values[1][i][1]);
-            //    db.Product_Indent_Feature.Add(product_Indent_Feature);
-            //    db.SaveChanges();
-            //}
-            //for (int i = 0; i < values[2].Length; i++)
-            //{
-
-            //    Product_Indent_Feature product_Indent_Feature = new Product_Indent_Feature();
-            //    product_Indent_Feature.Production_Indentid = productionIndentId;
-            //    product_Indent_Feature.Feature_Typeid = Convert.ToInt32(values[2][i][0]);
-            //    product_Indent_Feature.FeatureValue = Convert.ToInt32(values[2][i][1]);
-            //    product_Indent_Feature.Unit_Measurementid = Convert.ToInt32(values[2][i][2]);
-            //    product_Indent_Feature.Featureid = db.Features.Where(x => x.Feature_Typeid == product_Indent_Feature.Feature_Typeid).FirstOrDefault().id;
-            //    db.Product_Indent_Feature.Add(product_Indent_Feature);
-            //    db.SaveChanges();
-
-
-            //}
+  
 
             return Json(transfer_Order.id, JsonRequestBehavior.AllowGet);
         }

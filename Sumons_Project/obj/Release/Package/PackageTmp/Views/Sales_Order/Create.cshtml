@@ -19,14 +19,14 @@
             <div class="col-md-3">
                 <div class="position-relative form-group"><label for="" class="">Lot Number</label><input name="" id="Lot" type="text" class="form-control"></div>
             </div>
-            <div class="col-md-2">
+            @*<div class="col-md-2">
                 <div class="position-relative form-group">
                     <label for="" class=""> </label>
                     <button id="Gen" class="mb-2 mr-2 btn btn-success btn-primary btn-lg btn-block">
                         Go
                     </button>
                 </div>
-            </div>
+            </div>*@
         </div>
         <div class="form-row Header_Section_1">
             <div class="col-md-2">
@@ -87,38 +87,38 @@
         <hr />
         <div class="form-row">
             <!--    <div class="col-md-2">
-                <div class="position-relative form-group"><label for="" class="">Multisite</label><input type="checkbox" class="form-control Multisite"></div>
-            </div>
-                <div class="position-relative form-check form-check-inline">
-                <label class="form-check-label">
-                    <input type="checkbox" class="form-check-input Multisite"> Multisite
-                </label>
-            </div>
-                <div class="form-check">
-                <label style="padding-right:5px" for="inlineCheckbox1" class="form-check-label">Multisite</label><input class="Multisite" type="checkbox" checked data-toggle="toggle" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="default">
+        <div class="position-relative form-group"><label for="" class="">Multisite</label><input type="checkbox" class="form-control Multisite"></div>
+    </div>
+        <div class="position-relative form-check form-check-inline">
+        <label class="form-check-label">
+            <input type="checkbox" class="form-check-input Multisite"> Multisite
+        </label>
+    </div>
+        <div class="form-check">
+        <label style="padding-right:5px" for="inlineCheckbox1" class="form-check-label">Multisite</label><input class="Multisite" type="checkbox" checked data-toggle="toggle" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="default">
 
-            </div> -->
+    </div> -->
             <div class="col-md-2 SiteLoader">
                 @*<div class="position-relative form-group"><label for="" class="">Site</label> <select class="form-control Site"></select></div>*@
             </div>
             <div class="col-md-2 WarehouseLoader">
                 @*<div class="position-relative form-group"><label for="" class="">Warehouse</label><input class="form-control"></div>*@
             </div>
-            <div class="col-md-2 SiteProductCount">
+            @* <div class="col-md-2 SiteProductCount">
+        </div>
+        <div class="col-md-2">
+            <div class="position-relative form-group">
+                <label for="" class=""> </label>
+                <button id="GenerateDBtn" class="mb-2 mr-2 btn btn-success btn-primary btn-lg btn-block">
+                    Generate Details
+                </button>
             </div>
-            <div class="col-md-2">
-                <div class="position-relative form-group">
-                    <label for="" class=""> </label>
-                    <button id="GenerateDBtn" class="mb-2 mr-2 btn btn-success btn-primary btn-lg btn-block">
-                        Generate Details
-                    </button>
-                </div>
-            </div>
+        </div>*@
         </div>
     </div>
 </div>
 
-<div class="main-card mb-3 card animated fadeIn ProductDtl_Section">
+@*<div class="main-card mb-3 card animated fadeIn ProductDtl_Section">
     <div class="card-body">
         <h5 class="card-title">Products</h5>
         <table class="mb-0 table table-hover">
@@ -134,7 +134,7 @@
             </tbody>
         </table>
     </div>
-</div>
+</div>*@
 <div class="Button_Section" style=" position: fixed; bottom: 40px; right: 40px">
     <button id="SaveBtn" class="btn btn-success btn-lg">Save</button>
 </div>
@@ -174,7 +174,21 @@
         //        alert("Please Input Number of Rows to be Generated")
         //    }
         //});
+        $(window).on('load', function () {
+                        $.blockUI.defaults = {
+                timeout: 0,
+                overlayCSS: {
+                    backgroundColor: '#fff',
+                    opacity: 0.7,
+                    cursor: 'wait'
+                },
 
+            }
+            $.blockUI({
+                message: $('.body-block-example-2')
+            });
+
+        });
     $(document).ready(function() {
 
         $("#Featureid").empty();
@@ -246,6 +260,7 @@
         //$(".ProductAttr_Section").hide();
         //$(".ProductDtl_Section").hide();
         //$(".Button_Section").hide();
+        $.unblockUI();
     });
 
 
@@ -297,7 +312,11 @@
         DTS = [];
 
 
-        $("#SaveBtn").click(function() {
+        $("#SaveBtn").click(function () {
+            $.blockUI({
+                message: $('.body-block-example-2')
+            });
+
         toastr.options = {
             "closeButton": true,
             "debug": false,
@@ -366,11 +385,15 @@
             url: '@Url.Action("SaveData", "Sales_Order")',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(postData),
-            success: function(data) {
-                alert(data);
+            success: function (data) {
+
+                location.replace('@Url.Action("Edit", "Sales_Order")'+"/"+data);
+                
+                $.unblockUI();
                 if (data[0].length != null) {
 
                     toastr.error(data[0], data[0].length);
+
                 } else {
                     toastr.success(data[0], data[0].length);
                 }
@@ -767,9 +790,64 @@
         }
     });
 
+                $("#Companyid").change(function () {
+            var compid = $(this).val();
+
+                if (compid != undefined && compid != '') {
+        var json = {
+            id: compid
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetSite", "Purchase_Order")',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(json),
+            success: function(data) {
+                $(".SiteLoader").empty();
+                $(".SiteLoader").append("<div class=\"position-relative form-group\"><label for=\"\" class=\"\">Site</label><select class=\"form-control Site\"></select></div>")
+                $.each(data, function(key, value) {
+                    $(".Site").append("<option value=\"" + value.Locations.id + "\">" + value.Locations.name + "</option>");
+                });
+
+                var siteid = $(".Site").val();
+                if (siteid != undefined && siteid != '') {
+                    var json = {
+                        id: siteid
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("GetWh", "Purchase_Order")',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(json),
+                        success: function(data) {
+                            $(".WarehouseLoader").empty();
+                            $(".SiteProductCount").empty();
+                            $(".WarehouseLoader").append("<div class=\"position-relative form-group\"><label for=\"\" class=\"\">Warehouse</label><select class=\"form-control Warehouse\"></select></div>")
+                            $(".SiteProductCount").append("<div class=\"position-relative form-group\"><label for=\"\" class=\"\">Count</label><input class=\"form-control SiteProductCountVal  input-mask-trigger\" data-inputmask=\"'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true\" im-insert=\"true\"></div>")
+                            $.each(data, function(key, value) {
+                                //alert("hi");
+                                $(".Warehouse").append("<option value=\"" + value.id + "\">" + value.name + "</option>");
+
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    }
+        })
     $(document.body).on("change", ".FeaturesTxtBoxUnit", function() {
         $(".Text" + $(this).attr("id")).attr("UnitValue", $(this).val())
     })
+
+        $(document.body).on("change", "#Locationid", function () {
+            var Country = $("#Locationid  option:selected").text();
+            if (Country == 'Bangladesh') {
+                $("#SalesType").val("Local");
+            } else {
+                $("#SalesType").val("Import");
+            }
+        })
     </script>
 
 }

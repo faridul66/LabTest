@@ -4,7 +4,12 @@
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/index.cshtml";
 }
+<head>
+    <link href="~/Content/Exp/Select2.css" rel="stylesheet" />
+    <link href="~/Content/Exp/select2-bootstrap4.css" rel="stylesheet" />
+    <!-- select2-bootstrap4-theme -->
 
+</head>
 
 <div class="app-page-title">
     <div class="page-title-wrapper">
@@ -100,7 +105,7 @@
                         <div class="form-row">
                             <div class="col-md-2">
                                 <div class="position-relative form-group">
-                                    <label for="" class="">QTY</label> @Html.EditorFor(model => model.qty, new { htmlAttributes = new { @class = "form-control", @Type = "" } })
+                                    <label for="" class="">Estimated Count</label> @Html.EditorFor(model => model.qty, new { htmlAttributes = new { @class = "form-control", @Type = "" } })
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -202,34 +207,39 @@
 <div id="production" class=" Production Consumption">
     <div class="">
         <div class="row">
-            <div class="col-md-7">
+            <div class="col-lg-7">
 
                 <div class="main-card mb-3 card animated fadeIn ">
                     <div class="card-body">
-                        @*<h5 class="card-title">Production Indent</h5>*@
-                        <div class="form-row">
+                        <h5 class="card-title">Consumption</h5>
+                        @if (Request.IsAuthenticated && User.IsInRole("Consumption"))
+                        {
 
-                            <div class="col-md-2">
-                                <div class="position-relative form-group"><label for="" class="">From WH</label><Select id="WarehouseCon" class="form-control Warehouse"></Select></div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="position-relative form-group"><label for="" class="">Product Type</label><Select id="ProductTypeidCon" class="form-control"></Select></div>
-                            </div>
+                        
+                            <div class="form-row">
 
-                            <div class="col-md-5">
-                                <div class="position-relative form-group"><label for="" class="">Product Serial</label><select id="ProductsCons" class="form-control"></select></div>
-                            </div>
-
-                            <div class="col-md-2">
-                                <div class="position-relative form-group">
-                                    <label for="" class="" style="color:white"> .</label>
-                                    <button id="ConsumptionBtn" class="mb-2 mr-2 btn btn-success btn-primary btn-lg btn-block">
-                                        Consume
-                                    </button>
+                                <div class="col-lg-2">
+                                    <div class="position-relative form-group"><label for="" class="">From WH</label><Select id="WarehouseCon" class="form-control Warehouse"></Select></div>
                                 </div>
-                            </div>
+                                <div class="col-lg-3">
+                                    <div class="position-relative form-group"><label for="" class="">Product Type</label><Select id="ProductTypeidCon" class="form-control"></Select></div>
+                                </div>
 
-                        </div>
+                                <div class="col-lg-5">
+                                    <div class="position-relative form-group"><label for="" class="">Product Serial</label><select id="ProductsCons" class="form-control"></select></div>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <div class="position-relative form-group">
+                                        <label for="" class="" style="color:white"> .</label>
+                                        <button id="ConsumptionBtn" class="mb-2 mr-2 btn btn-success btn-primary btn-lg btn-block">
+                                            Consume
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
                         <div class="form-row">
                             <table class="mb-0 table table-hover">
                                 <thead>
@@ -252,48 +262,58 @@
                 </div>
 
             </div>
-            <div class="col-md-5">
+            <div class="col-lg-5">
                 <div class="main-card mb-3 card animated fadeIn ">
                     <div class="card-body">
-                        @*<h5 class="card-title">Production Indent</h5>*@
+                        <h5 class="card-title">Production</h5>
+                        <span id="" class="badge badge-pill badge-success pull-right ProducedTotal" style="position: absolute; right: 10px;top:20px"></span>
+
+                        <p id="clock" style="text-align: center"></p>
+                        <hr/>
+                    @if (Request.IsAuthenticated && User.IsInRole("Production"))
+                    {
+
                         <div class="form-row">
 
-                            <div class="col-md-4">
+                            <div class="col-lg-4">
                                 <div class="position-relative form-group"><label for="" class="">To WH</label><Select class="form-control Warehouse"></Select></div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-lg-4">
                                 <div class="position-relative form-group"><label for="" class="">Weight</label><input id="ProductionMUnit" class="form-control"></div>
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-lg-4">
                                 <div class="position-relative form-group">
-                                    <label for="" class="" style="color:white"> .</label>
+                                    <label for="" class="" style="color: white"> .</label>
                                     <button id="PrintBtn" class="mb-2 mr-2 btn btn-success btn-primary btn-lg btn-block">
                                         Print
                                     </button>
                                 </div>
                             </div>
+                        </div>
+                    }
+                            <div class="form-row">
+                                <table class="mb-0 table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Serial No.</th>
+                                            <th>Weight</th>
+                                            <th>Unit</th>
+                                            <th>Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ProducedItems"></tbody>
+                                    <tfoot>
+                                        <tr><th>Total</th><th style="text-align:right" colspan="4" id="" class="ProducedTotal"></th></tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
 
-                        </div>
-                        <div class="form-row">
-                            <table class="mb-0 table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Serial No.</th>
-                                        <th>Weight</th>
-                                        <th>Unit</th>
-                                        <th>Time</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="ProducedItems"></tbody>
-                            </table>
-                        </div>
+                        @*<button class="mt-2 btn btn-primary">Save</button>*@
+
                     </div>
-
-                    @*<button class="mt-2 btn btn-primary">Save</button>*@
-
-                </div>
             </div>
         </div>
     </div>
@@ -352,17 +372,30 @@
         </div>-->
 @*<button class="mt-2 btn btn-primary">Save</button>*@
 <!--</div>
-            </div>
-        </div>
-    </div>
-</div>-->
-<div class="Button_Section" style=" position: fixed; bottom: 40px; right: 40px; z-index:1">
-    @*<button class="btn btn-danger btn-lg">Cancel</button>*@
-    <button id="Update" class="btn btn-success btn-lg">Update</button>
-    <button id="Start" class="btn btn-info btn-lg">Start</button>
-    <button id="CompleteProduction" class="btn btn-info btn-lg animated">Production Complete</button>
-    <button id="CompleteIndent" class="btn btn-info btn-lg animated" style="display:none">Complete Indent</button>
 </div>
+</div>
+</div>
+</div>-->
+
+    <div class="Button_Section" style="position: fixed; bottom: 40px; right: 40px; z-index: 1">
+        @*<button class="btn btn-danger btn-lg">Cancel</button>*@
+    @if (Request.IsAuthenticated && User.IsInRole("Update_Indent"))
+    {
+        <button id="Update" class="btn btn-success btn-lg">Update</button>
+    }
+    @if (Request.IsAuthenticated && User.IsInRole("Start_Production"))
+    {
+        <button id="Start" class="btn btn-info btn-lg">Start</button>
+    }
+    @if (Request.IsAuthenticated && User.IsInRole("Complete_Production"))
+    {
+        <button id="CompleteProduction" class="btn btn-info btn-lg animated">Production Complete</button>
+
+        <button id="CompleteIndent" class="btn btn-info btn-lg animated" style="display: none">Complete Indent</button>
+    }
+    
+        </div>
+
 <div class="body-block-example-2 d-none">
     <div class="loader bg-transparent no-shadow">
         <div class="ball-pulse-rise">
@@ -388,7 +421,6 @@
                                 <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="dropdown-toggle btn btn-success">Add <i class="fas fa-plus"></i></button>
                                 <div id="" tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 32px, 0px);">
                                     <h6 tabindex="-1" class="dropdown-header">Select Product</h6>
-
                                 </div>
                             </div>*@
                     </div>
@@ -436,6 +468,42 @@
 @section scripts{
 
     <script type="text/javascript">
+
+
+                @*$("#sl").click(function () {
+
+             $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("getsl", "Production_Indent")',
+                            contentType: "application/json; charset=utf-8",
+                 data: JSON.stringify({ values: [$("#Machineid").val(), $("#Shiftid").val()]}),
+                            success: function(data) {
+                                console.log(data);
+                            }
+                        });
+        })*@
+
+        $(window).on('load', function () {
+
+
+            $.blockUI.defaults = {
+                timeout: 0,
+                overlayCSS: {
+                    backgroundColor: '#fff',
+                    opacity: 0.7,
+                    cursor: 'wait'
+                },
+
+            }
+            $.blockUI({
+                message: $('.body-block-example-2')
+            });
+
+        });
+
+
+
+
     $("#shift_start").hover(function() {
     $("#ProductDetails").css("z-index", "-1");
 }).blur(function() {
@@ -449,25 +517,6 @@ $(function() {
 
 
 $(document).ready(function() {
-    //toastr.options = {
-    //    "closeButton": false,
-    //    "debug": false,
-    //    "newestOnTop": false,
-    //    "progressBar": false,
-    //    "positionClass": "toast-top-full-width",
-    //    "preventDuplicates": false,
-    //    "onclick": null,
-    //    "showDuration": "300",
-    //    "hideDuration": "1000",
-    //    "timeOut": "5000",
-    //    "extendedTimeOut": "1000",
-    //    "showEasing": "swing",
-    //    "hideEasing": "linear",
-    //    "showMethod": "fadeIn",
-    //    "hideMethod": "fadeOut"
-    //}
-
-    //toastr.success('Are you the 6 fingered man?')
 
 
     $(".Production").hide();
@@ -484,11 +533,11 @@ $(document).ready(function() {
         $(".Indent select").prop("disabled", true);
         $('#clock').prop("disabled", true);
         $("#Update").hide();
-        $("#Start").hide()
-        LoadWarehouse($("#Sites").val());
+        $("#Start").hide();
+
         LoadProducedItems(@Model.id);
         LoadConsumedItems(@Model.id);
-        smoothScroll('production')
+        smoothScroll('production');
         LoadProductTypeCon();
     }
      if ("@Model.status" == "C") {
@@ -503,7 +552,7 @@ $(document).ready(function() {
 
 
         //$(this).hide();
-        //LoadResiduals(@Model.id, $("#WarehouseCon").val());
+
         LoadWarehouse($("#Sites").val());
         LoadProducedItems(@Model.id);
         LoadConsumedItems(@Model.id);
@@ -513,6 +562,7 @@ $(document).ready(function() {
          LoadWastageC(@Model.id);
          $(".Production input, .Production select, .Production button, #productionend input,#productionend select").prop("disabled", true);
     }
+    $.unblockUI();
 });
 
 
@@ -533,12 +583,16 @@ function LoadCompany(eventType) {
                 var companysite = GetCompanySite($("#Machineid").val());
                 $("#Companies").val(companysite[0]);
             }
-            LoadSite($("#Companies").val(), "Load");
+
+            LoadSite($("#Companies").val(), "Load").then(function () {
+                LoadWarehouse($("#Sites").val());
+               
+            });
         }
     });
 }
 
-function LoadSite(companyid, eventType) {
+@*function LoadSite(companyid, eventType) {
     var json = {
         id: companyid
     }
@@ -561,7 +615,39 @@ function LoadSite(companyid, eventType) {
             }
         }
     });
+}*@
+
+        function LoadSite(companyid, eventType) {
+    return new Promise((resolve, reject) => {
+        var json = {
+            id: companyid
+        };
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetSite", "Home")',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(json),
+            success: function(data) {
+                $("#Sites").empty();
+                $.each(data, function(key, value) {
+                    $("#Sites").append("<option value=\"" + value.Locations.id + "\">" + value.Locations.name + "</option>");
+                });
+                if (eventType != "Load") {
+                    LoadMachine(companyid, $("#Sites").val());
+                } else {
+                    var companysite = GetCompanySite($("#Machineid").val());
+                    $("#Sites").val(companysite[1]);
+                    $("#Companies").val(companysite[0]);
+                }
+                resolve(); // resolve the Promise when the operation is complete
+            },
+            error: function(error) {
+                reject(error); // reject the Promise if there is an error
+            }
+        });
+    });
 }
+
 
 
 function LoadWarehouse(siteId) {
@@ -570,6 +656,7 @@ function LoadWarehouse(siteId) {
         type: "POST",
         url: '@Url.Action("GetWh", "Purchase_Order")',
         contentType: "application/json; charset=utf-8",
+        async:false,
         data: JSON.stringify({
             id: siteId
         }),
@@ -579,6 +666,7 @@ function LoadWarehouse(siteId) {
                 $(".Warehouse").append("<option value=\"" + value.id + "\">" + value.name + "</option>");
 
             });
+            LoadProduct($("#ProductTypeidCon").val(), $("#WarehouseCon").val())
         }
     });
 
@@ -721,7 +809,7 @@ function LoadDynamicFeature(eventType, productid) {
                         }
 
                     } else {
-                        $(".MainFeature").append("<div class= \"position-relative form-group\" ><label for=\"\" class=\"\">" + value.Feature_Type.type_name + "</label><input id=\"MainFeatureValue\" class=\"form-control\"></div>")
+                        $(".MainFeature").append("<div class= \"position-relative form-group\" ><label id=\"MainUnitLabel\" for=\"\" class=\"\">Estimated " + value.Feature_Type.type_name + "</label><input id=\"MainFeatureValue\" class=\"form-control\"></div>")
                         mainFeatureId = value.Feature_Type.id;
                         var json = {
                             id: mainFeatureId
@@ -730,6 +818,7 @@ function LoadDynamicFeature(eventType, productid) {
                             type: "POST",
                             url: '@Url.Action("GetUnit", "Purchase_Order")',
                             contentType: "application/json; charset=utf-8",
+                            async:false,
                             data: JSON.stringify(json),
                             success: function(data) {
 
@@ -834,7 +923,7 @@ $("#Shiftid").change(function() {
     if (moment($("#shift_start").val()).isValid()) {
         SetEndingDateTime($("#shift_start").val(), GetShiftDuration($("#Shiftid").val()));
     }
-})
+    })
 
 
 
@@ -964,12 +1053,23 @@ function LoadProducedItems(indentId) {
         async: false,
         success: function(data) {
             var counter = 0;
+            var sum = 0;
             var datalength = data.length;
             $.each(data, function(key, value) {
 
                 $("#ProducedItems").append("<tr><td>" + (datalength - counter) + "</td><td>" + value.Product.product_serial + "</td><td>" + value.prod_count + "</td><td>" + value.Production_Indent.Unit_Measurement.code + "</td><td>" + moment(value.production_date).format("h:mm:ss a") + "</td></tr>");
+                sum = sum + value.prod_count;
                 counter++;
             });
+           
+            
+            var unitCode = $("#MainUnit :selected").text()/*data[0].Production_Indent.Unit_Measurement.code*/;
+            $(".ProducedTotal").each(function () {
+                $(".ProducedTotal").text('Product Count: ' + datalength + ' and ' + $("#MainUnitLabel").text().replace("Estimated ", "") +': '+$.number(sum, 2) + ' ' + unitCode);
+            })
+            
+           
+            
         }
     })
 }
@@ -1001,9 +1101,12 @@ function LoadConsumedItems(indentId) {
     })
 }
 
-$("#PrintBtn").click(function() {
+        $("#PrintBtn").click(function () {
+
+            if ($.isNumeric($("#ProductionMUnit").val())) {
+            
     $("#ProducedItems").empty();
-    var ProductionData = [@Model.id, $("#Product_Typeid").val(), $("#ProductionMUnit").val(), $(".Warehouse").val()];
+    var ProductionData = [@Model.id, $("#Product_Typeid").val(), $("#ProductionMUnit").val(), $(".Warehouse").val(), $("#Machineid").val(), $("#Shiftid").val()];
     $.ajax({
         type: "POST",
         url: '@Url.Action("PrintandSave", "Production_Indent")',
@@ -1021,8 +1124,17 @@ $("#PrintBtn").click(function() {
                 $("#ProducedItems").append("<tr><td>" + (datalength - counter) + "</td><td>" + value.Product.product_serial + "</td><td>" + value.prod_count + "</td><td>" + value.Production_Indent.Unit_Measurement.code + "</td><td>" + moment(value.production_date).format("h:mm:ss a") + "</td></tr>");
                 counter++;
             });
+            toastr["success"](data[0].Product.product_serial+" Generated.")
         }
     })
+
+
+
+            } else {
+
+                Swal.fire('Failed', 'Make sure you enter the produced quantity in numeric value.', 'error');
+            }
+
 })
 //Emergency 2
 $("#ConsumptionBtn").click(function() {
@@ -1062,7 +1174,7 @@ $("#ConsumptionBtn").click(function() {
 
 
 function updateClock() {
-    $('#clock').val(moment().format('MM-DD-YY HH:mm:ss A'));
+    $('#clock').text(moment().format('DD-MMM-YY HH:mm:ss A'));
 }
 
 setInterval(updateClock, 1000);
@@ -1097,7 +1209,7 @@ function smoothScroll(id) {
         if (leapY < stopY) leapY = stopY;
         timer++;
     }
-}
+    }
 
 function LoadProductTypeCon() {
 
@@ -1113,12 +1225,10 @@ function LoadProductTypeCon() {
             $.each(data, function(key, value) {
                 $("#ProductTypeidCon").append("<option value=\"" + value.id + "\">" + value.type_name + "</option>");
             });
+           
         }
 
     })
-    LoadProduct($("#ProductTypeidCon").val(), $("#WarehouseCon").val())
-
-
 }
 
 
@@ -1151,6 +1261,12 @@ $("#ProductTypeidCon").change(function() {
     LoadProduct($("#ProductTypeidCon").val(), $("#WarehouseCon").val())
 
 })
+
+        $(document).on("change", "#Product_Typeid", (function () {
+            LoadDynamicFeature($(this).val());
+
+        }))
+
 
 $("#CompleteProduction").click(async function() {
     var text = "";
@@ -1197,7 +1313,7 @@ $("#CompleteProduction").click(async function() {
 
 
     }
-})
+    })
 
         function LoadResiduals(productindentid, warehouseid) {
                     $.ajax({
@@ -1423,7 +1539,7 @@ $(document).on("click", "#ConsItemDelete", function() {
 
         Swal.fire('','Saved','success')
     }
-})
+    })
 
         $(document).on("change", ".productType", function () {
             $(this).parent().next().next().children().attr('id',$(this).val());
@@ -1450,7 +1566,7 @@ $(document).on("click", "#ConsItemDelete", function() {
             $.ajax({
                 type: "POST",
                 contentType: "application/json;charset=uft-8",
-                url: '@Url.Action("LoadWastageC","Production_Indent")',
+                url: '@Url.Action("LoadWastageC", "Production_Indent")',
                 data: JSON.stringify({ id: productionIndentId }),
                 success: function (data) {
                     console.log(data)
@@ -1467,7 +1583,7 @@ $(document).on("click", "#ConsItemDelete", function() {
             $.ajax({
                 type: "POST",
                 contentType: "application/json;charset=uft-8",
-                url: '@Url.Action("LoadResidualC","Production_Indent")',
+                url: '@Url.Action("LoadResidualC", "Production_Indent")',
                 data: JSON.stringify({ id: productionIndentId}),
                 success: function (data) {
                     console.log(data)
@@ -1485,6 +1601,7 @@ $(document).on("click", "#ConsItemDelete", function() {
             })
 
         }
+
 
 
     </script>

@@ -5,7 +5,8 @@ $( document ).ready(function() {
     setTimeout(function () {
 
         $('#example').DataTable({
-            responsive: true
+            responsive: true,
+            scrollCollapse: true,
         });
 
         $('#example2').DataTable({

@@ -17,17 +17,28 @@
     @*@Scripts.Render("~/bundles/bootstrap")*@
     <link href="~/Content/bootstrap-datetimepicker.css" rel="stylesheet" />
     <link href=" https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css " rel="stylesheet">
-
+    <link href=" https://cdn.datatables.net/1.13.3/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 
     <link href="~/Content/Toastr/toastr.min.css" rel="stylesheet" />
+    <style>
+        .logo-src {
+            background-size: 90% !important;
+            background-repeat: no-repeat !important;
+            height: 55px !important;
+            width: 80px !important
+        }
+    </style>
 </head>
 
 <body>
+
     <div class="app-container app-theme-white body-tabs-shadow fixed-header fixed-sidebar">
         <!--Header START-->
         <div class="app-header header-shadow">
             <div class="app-header__logo">
-                <div class="logo-src"></div>
+                <div class="logo-src">
+
+                </div>
                 <div class="header__pane ml-auto">
                     <div>
                         <button type="button" class="hamburger close-sidebar-btn hamburger--elastic" data-class="closed-sidebar">
@@ -58,6 +69,13 @@
             </div>
             <div class="app-header__content">
                 <div class="app-header-right">
+                    
+                    <div class="header-dots">
+                        
+                    </div>
+                    
+                    
+
                     <div class="header-btn-lg pr-0">
                         <div class="widget-content p-0">
                             <div class="widget-content-wrapper">
@@ -79,16 +97,24 @@
                                                                 </div>
                                                                 <div class="widget-content-left">
                                                                     <div class="widget-heading">
-                                                                        Sumon K. Mondol
+                                                                        @Html.Action("FullName", "Home").ToString()
                                                                     </div>
                                                                     <div class="widget-subheading opacity-8">
-                                                                        Sr. IT Executive
+
                                                                     </div>
                                                                 </div>
                                                                 <div class="widget-content-right mr-2">
-                                                                    <button class="btn-pill btn-shadow btn-shine btn btn-focus">
-                                                                        Logout
-                                                                    </button>
+                                                                    <a class="btn-pill btn-shadow btn-shine btn btn-focus" href="javascript:document.getElementById('logoutForm').submit()">
+                                                                        Sign out
+
+                                                                    </a>
+                                                                    @if (Request.IsAuthenticated)
+                                                                    {
+                                                                        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                                                                        {
+                                                                            @Html.AntiForgeryToken()
+                                                                        }
+                                                                    }
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -100,10 +126,10 @@
                                 </div>
                                 <div class="widget-content-left  ml-3 header-user-info">
                                     <div class="widget-heading">
-                                        Sumon K. Mondol
+                                        @Html.Action("FirstName", "Home").ToString()
                                     </div>
                                     <div class="widget-subheading">
-                                        Sr. IT Executive
+
                                     </div>
                                 </div>
                             </div>
@@ -172,67 +198,72 @@
                                 </ul>
                             </li>
 
-                            <li class="treeview">
-                                <a href="#">
-                                    <i class="metismenu-icon pe-7s-diamond"></i> Admin
-                                    <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
-                                </a>
-                                <ul class="treeview-menu">
-                                    <li class="treeview">
+                            @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+                            {
+                                <li class="treeview">
+                                    <a href="#">
+                                        <i class="metismenu-icon pe-7s-diamond"></i> Admin
+                                        <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li class="treeview">
 
-                                        <a href="#">
-                                            <i class="metismenu-icon"></i> User Management
-                                            <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
-                                        </a>
-                                        <ul class="treeview-menu">
-                                            <li>@Html.ActionLink("Users", "Index", "Users")</li>
-                                            <li>@Html.ActionLink("Groups", "Index", "Groups")</li>
-                                            <li>@Html.ActionLink("Roles", "Index", "Roles")</li>
-                                        </ul>
-                                    </li>
-                                    <li class="treeview">
-                                        <a href="#">
-                                            <i class="metismenu-icon"></i> Master Data
-                                            <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
-                                        </a>
-                                        <ul class="treeview-menu">
-                                            <li> @Html.ActionLink("Companies", "Index", "Companies")</li>
-                                            <li> @Html.ActionLink("Location_Type", "Index", "Location_Type")</li>
-                                            <li> @Html.ActionLink("Locations", "Index", "Locations")</li>
-                                            <li> @Html.ActionLink("Customers", "Index", "Customers")</li>
-                                            <li> @Html.ActionLink("Vendors", "Index", "Vendors")</li>
-                                            <li> @Html.ActionLink("Machine_Type", "Index", "Machine_Type")</li>
-                                            <li> @Html.ActionLink("Machines", "Index", "Machines")</li>
-                                            <li> @Html.ActionLink("Product_Type", "Index", "Product_Type")</li>
-                                            <li> @Html.ActionLink("Products", "Index", "Products")</li>
-                                            <li> @Html.ActionLink("Feature_Type", "Index", "Feature_Type")</li>
-                                            <li> @Html.ActionLink("Features", "Index", "Features")</li>
-                                            <li> @Html.ActionLink("Unit_Measurement", "Index", "Unit_Measurement")</li>
-                                            <li> @Html.ActionLink("Product_Feature", "Index", "Product_Feature")</li>
+                                            <a href="#">
+                                                <i class="metismenu-icon"></i> User Management
+                                                <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                                            </a>
+                                            <ul class="treeview-menu">
+                                                <li>@Html.ActionLink("Users", "Index", "Users")</li>
+                                                <li>@Html.ActionLink("Groups", "Index", "Groups")</li>
+                                                <li>@Html.ActionLink("Roles", "Index", "Roles")</li>
+                                            </ul>
+                                        </li>
+                                        <li class="treeview">
+                                            <a href="#">
+                                                <i class="metismenu-icon"></i> Master Data
+                                                <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                                            </a>
+                                            <ul class="treeview-menu">
+                                                <li> @Html.ActionLink("Companies", "Index", "Companies")</li>
+                                                <li> @Html.ActionLink("Location_Type", "Index", "Location_Type")</li>
+                                                <li> @Html.ActionLink("Locations", "Index", "Locations")</li>
+                                                <li> @Html.ActionLink("Customers", "Index", "Customers")</li>
+                                                <li> @Html.ActionLink("Vendors", "Index", "Vendors")</li>
+                                                <li> @Html.ActionLink("Machine_Type", "Index", "Machine_Type")</li>
+                                                <li> @Html.ActionLink("Machines", "Index", "Machines")</li>
+                                                <li> @Html.ActionLink("Product_Type", "Index", "Product_Type")</li>
+                                                <li> @Html.ActionLink("Products", "Index", "Products")</li>
+                                                <li> @Html.ActionLink("Feature_Type", "Index", "Feature_Type")</li>
+                                                <li> @Html.ActionLink("Features", "Index", "Features")</li>
+                                                <li> @Html.ActionLink("Unit_Measurement", "Index", "Unit_Measurement")</li>
+                                                <li> @Html.ActionLink("Product_Feature", "Index", "Product_Feature")</li>
 
-                                            <li>
-                                                <a href="#l">
-                                                    <i class="metismenu-icon">
-                                                    </i>Sites
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#">
-                                                    <i class="metismenu-icon">
-                                                    </i>Machines
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#">
-                                                    <i class="metismenu-icon">
-                                                    </i>Items
-                                                </a>
-                                            </li>
-                                        </ul>
+                                                <li>
+                                                    <a href="#l">
+                                                        <i class="metismenu-icon">
+                                                        </i>Sites
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">
+                                                        <i class="metismenu-icon">
+                                                        </i>Machines
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">
+                                                        <i class="metismenu-icon">
+                                                        </i>Items
+                                                    </a>
+                                                </li>
+                                            </ul>
 
-                                    </li>
-                                </ul>
-                            </li>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+
+
 
                         </ul>
                     </div>
@@ -241,22 +272,22 @@
             <div class="app-main__outer">
                 <div class="app-main__inner">
                     <!-- <div class="app-page-title">
-                         <div class="page-title-wrapper">
-                             <div class="page-title-heading">
-                                 <div class="page-title-icon">
-                                     <i class="pe-7s-car icon-gradient bg-mean-fruit"></i>
-                                 </div>
-                                 <div>Company
-                                     <div class="page-title-subheading">This is an example page for Company Setup.</div>
-                                 </div>
-                             </div>
-                             <div class="page-title-actions">
+                        <div class="page-title-wrapper">
+                            <div class="page-title-heading">
+                                <div class="page-title-icon">
+                                    <i class="pe-7s-car icon-gradient bg-mean-fruit"></i>
+                                </div>
+                                <div>Company
+                                    <div class="page-title-subheading">This is an example page for Company Setup.</div>
+                                </div>
+                            </div>
+                            <div class="page-title-actions">
 
-                                     <button type="button"  class="btn-shadow btn btn-info"> Create New
-                                     </button>
-                             </div>
-                         </div> //
-                     </div> -->
+                                <button type="button"  class="btn-shadow btn btn-info"> Create New
+                                </button>
+                            </div>
+                        </div> //
+                    </div> -->
                     <div class="tabs-animation">
 
 
@@ -422,22 +453,21 @@
 
     <!--TABLES -->
     <!--DataTables-->
-    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+    <!--<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/datatables.net-bs4@1.10.19/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js" crossorigin="anonymous"></script>
-
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js" crossorigin="anonymous"></script>-->
     <!--Bootstrap Tables-->
-    <script src="~/Content/Theme/assets/js/vendors/tables.js"></script>
+    @*<script src="~/Content/Theme/assets/js/vendors/tables.js"></script>*@
 
     <!--Tables Init-->
-    <script src="~/Content/Theme/assets/js/scripts-init/tables.js"></script>
-
+    @*<script src="~/Content/Theme/assets/js/scripts-init/tables.js"></script>*@
+<script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap4.min.js"></script>
     <!--Date Time Picker-->
     <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
-
-
-
+    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay/dist/loadingoverlay.min.js"></script>
+    <script src="~/Scripts/jquery.number.min.js"></script>
 
 
     <script>
@@ -459,9 +489,9 @@
             }).parentsUntil(".vertical-nav-menu > .treeview-menu").addClass('mm-active');
             //$('[data-toggle="tooltip"]').tooltip();
         });
-                                                                                                                                    //$(".dropdown-toggle").click(function () {
-                                                                                                                                    //    $('[data-toggle="tooltip"], .tooltip').tooltip("hide");
-                                                                                                                                    //});
+                                                                                                                                        //$(".dropdown-toggle").click(function () {
+                                                                                                                                        //    $('[data-toggle="tooltip"], .tooltip').tooltip("hide");
+                                                                                                                                        //});
 
     </script>
 

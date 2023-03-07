@@ -5,10 +5,23 @@
     Layout = "~/Views/Shared/index.cshtml";
 }
 
+<head>
+    <link href="~/Content/Exp/Select2.css" rel="stylesheet" />
+    <link href="~/Content/Exp/select2-bootstrap4.css" rel="stylesheet" />
+    <!-- select2-bootstrap4-theme -->
 
-<div class="main-card mb-3 card animated fadeIn ">
+</head>
+
+
+@{
+    ;
+}
+
+
+<div class="main-card mb-3 card animated fadeIn OrderArea">
     <div class="card-body">
         <h5 class="card-title">Sales Order</h5>
+        @Html.HiddenFor(model => model.status)
         <div class="form-row">
             <div class="col-md-4">
                 <div class="position-relative form-group"><label for="" class="">Company</label>@Html.DropDownList("Companyid", null, htmlAttributes: new { @class = "form-control" })</div>
@@ -19,14 +32,14 @@
             <div class="col-md-3">
                 <div class="position-relative form-group"><label for="" class="">Lot Number</label><input name="" id="Lot" type="text" class="form-control"></div>
             </div>
-            <div class="col-md-2">
+            @*<div class="col-md-2">
                 <div class="position-relative form-group">
                     <label for="" class=""> </label>
                     <button id="Gen" class="mb-2 mr-2 btn btn-success btn-primary btn-lg btn-block">
                         Go
                     </button>
                 </div>
-            </div>
+            </div>*@
         </div>
         <div class="form-row Header_Section_1">
             <div class="col-md-2">
@@ -51,7 +64,7 @@
 
     </div>
 </div>
-<div class="main-card mb-3 card animated fadeIn ProductAttr_Section">
+<div class="main-card mb-3 card animated fadeIn ProductAttr_Section OrderArea">
     <div class="card-body">
         <h5 class="card-title">Product Type</h5>
         <div class="form-row">
@@ -98,27 +111,61 @@
                 <label style="padding-right:5px" for="inlineCheckbox1" class="form-check-label">Multisite</label><input class="Multisite" type="checkbox" checked data-toggle="toggle" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="default">
 
             </div> -->
-            <div class="col-md-2 SiteLoader">
+            <div class="col-md-2 SiteLoader OrderArea">
                 @*<div class="position-relative form-group"><label for="" class="">Site</label> <select class="form-control Site"></select></div>*@
             </div>
-            <div class="col-md-2 WarehouseLoader">
+            <div class="col-md-2 WarehouseLoader OrderArea">
                 @*<div class="position-relative form-group"><label for="" class="">Warehouse</label><input class="form-control"></div>*@
             </div>
-            <div class="col-md-2 SiteProductCount">
-            </div>
-            <div class="col-md-2">
-                <div class="position-relative form-group">
-                    <label for="" class=""> </label>
-                    <button id="GenerateDBtn" class="mb-2 mr-2 btn btn-success btn-primary btn-lg btn-block">
-                        Generate Details
-                    </button>
-                </div>
-            </div>
+           
         </div>
     </div>
 </div>
 
-<div class="main-card mb-3 card animated fadeIn ProductDtl_Section">
+
+<div class="col-md-12">
+    <div class="main-card mb-3 card">
+        <div class="card-body">
+            <h5 class="card-title">Product to Sale</h5>
+            <div class="form-row">
+                <div class="col-md-10">
+                    <div class="position-relative form-group">
+                        <label for="" class="">Product Serial</label>
+                        <select id="Products" class="Products form-control" multiple>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="position-relative form-group">
+                        <label for="" class="" style="color:white"> .</label>
+                        <button id="AddtoList" class="mb-2 mr-2 btn btn-success btn-primary btn-lg btn-block">
+                            Add to List
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <table class="mb-0 table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Item</th>
+                            <th>Serial No.</th>
+                            <th>Weight</th>
+                            <th>Unit</th>
+                            <th>Time</th>
+                           </tr>
+                    </thead>
+                    <tbody id="YetToSale">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+@*<div class="main-card mb-3 card animated fadeIn ProductDtl_Section">
     <div class="card-body">
         <h5 class="card-title">Products</h5>
         <table class="mb-0 table table-hover">
@@ -134,9 +181,10 @@
             </tbody>
         </table>
     </div>
-</div>
+</div>*@
 <div class="Button_Section" style=" position: fixed; bottom: 40px; right: 40px">
-    <button id="SaveBtn" class="btn btn-success btn-lg">Save</button>
+    <button id="UpdateBtn" class="btn btn-success btn-lg">Update</button>
+    <button id="SubmitBtn" class="btn btn-success btn-lg" style="display:none">Submit Sales Order</button>
 </div>
 
 <div class="body-block-example-2 d-none">
@@ -153,6 +201,14 @@
 </div>
 @section scripts{
     <script type="text/javascript">
+
+        $(document).ajaxStart(function () {
+            $.LoadingOverlay("show");
+        });
+        $(document).ajaxStop(function () {
+            $.LoadingOverlay("hide");
+        });
+
         //$(document.body).on("click", "#GenerateDBtn", function () {
         //    var SiteProductCount = $(".SiteProductCountVal").val();
         //    if (SiteProductCount.length != 0) {
@@ -175,19 +231,59 @@
         //    }
         //});
 
-    $(document).ready(function() {
+        $(window).on('load', function () {
+
+
+            $.blockUI.defaults = {
+                timeout: 0,
+                overlayCSS: {
+                    backgroundColor: '#fff',
+                    opacity: 0.7,
+                    cursor: 'wait'
+                },
+
+            }
+            $.blockUI({
+                message: $('.body-block-example-2')
+            });
+
+        });
+
+
+        $(document).ready(function () {
+
+
+            $(".Products").select2({
+                theme: 'bootstrap4',
+                closeOnSelect: false
+            });
+            if ($("#Products").val().length === 0) {
+                $("#AddtoList").prop("disabled", true);
+            }
+            else {
+                $("#AddtoList").prop("disabled", false);
+            }
+            $("#Products").on('change', function (e) {
+                if ($("#Products").val().length === 0) {
+                    $("#AddtoList").prop("disabled", true);
+                }
+                else {
+                    $("#AddtoList").prop("disabled", false);
+                }
+            });
 
         $("#Featureid").empty();
         $(".Site").empty();
         $(".Warehouse").empty();
-        $("#SubmitBtn").prop("disabled", true);
+
         var prodtid = $("#Product_Typeid").val();
         MainFeature_Id = null;
 
-        LoadDynamicFeature(prodtid);
+        LoadDynamicFeature("",prodtid);
+            LoadProducts();
+             LoadYetToSale(@Model.id);
 
-
-        $(".Warehouse").append("<div class=\"position-relative form-group\"><label for=\"\" class=\"\">Warehouse</label><select class=\"form-control\"></select></div>");
+        $(".Warehouse").append("<div class=\"position-relative form-group\"><label for=\"\" class=\"\">Warehouse</label><select id=\"WHID\" class=\"form-control\"></select></div>");
         var compid = $("#Companyid").val();
 
 
@@ -246,6 +342,7 @@
         //$(".ProductAttr_Section").hide();
         //$(".ProductDtl_Section").hide();
         //$(".Button_Section").hide();
+            $.unblockUI();
     });
 
 
@@ -253,7 +350,7 @@
     $(document.body).on("change", "#Product_Typeid", function() {
         //var prodtid = $(this).val();
 
-        LoadDynamicFeature($(this).val())
+        LoadDynamicFeature("change",$(this).val())
 
     });
     // Site Change Event
@@ -289,7 +386,7 @@
     // Product_Details = Product Serial and Table Data. (Arr)
     // DTS= Data to Save on Submit or Save. (Arr)
 
-    var Company_Id, Order_No, Sales_Date, Customer_Id, LC_Number, LC_Date, Country_Id, Purchase_Type, Product_Type_Id, Total_Count, Delivery_Date, MainFeature_Id, MainFeature_Value, MainFeature_Unit, Site_Id, Warehouse_Id, Product_Count, Lot_Number;
+        var Company_Id, Order_No, Sales_Date, Customer_Id, LC_Number, LC_Date, Country_Id, Purchase_Type, Product_Type_Id, Total_Count, Delivery_Date, MainFeature_Id, MainFeature_Value, MainFeature_Unit, Site_Id, Warehouse_Id, Product_Count, Lot_Number, OrderId;
     var Dynamic_Attr = [],
         Dynamic_AttrTxt = [],
         Products_Details = [],
@@ -297,7 +394,7 @@
         DTS = [];
 
 
-        $("#SaveBtn").click(function() {
+        $("#UpdateBtn").click(function() {
         toastr.options = {
             "closeButton": true,
             "debug": false,
@@ -316,12 +413,13 @@
         }
 
         //VarData, Dynamic_Attr, Products_Details, DTS = null;
+
         VarData.length = 0;
         Dynamic_Attr.length = 0;
         Dynamic_AttrTxt.length = 0;
         Products_Details.length = 0;
         DTS.length = 0;
-
+            OrderId=@Model.id;
         Company_Id = $("#Companyid").val();
         Customer_Id = $("#Customerid").val();
         Product_Type_Id = $("#Product_Typeid").val();
@@ -338,7 +436,7 @@
         Site_Id = $(".Site").val();
         Warehouse_Id = $(".Warehouse").val();
         Lot_Number = $("#Lot").val();
-        VarData = [Company_Id, Customer_Id, Product_Type_Id, Total_Count, MainFeature_Id, MainFeature_Value, Main_Unit, Country_Id, Order_No, Sales_Date, Delivery_Date, Site_Id, Warehouse_Id, Lot_Number]
+            VarData = [Company_Id, Customer_Id, Product_Type_Id, Total_Count, MainFeature_Id, MainFeature_Value, Main_Unit, Country_Id, Order_No, Sales_Date, Delivery_Date, Site_Id, Warehouse_Id, Lot_Number, OrderId]
 
         $("#DynaComb > div > div > div > select").each(function() {
             Dyna_Id = this.getAttribute('id');
@@ -363,7 +461,7 @@
         };
         $.ajax({
             type: "POST",
-            url: '@Url.Action("SaveData", "Sales_Order")',
+            url: '@Url.Action("UpdateData", "Sales_Order")',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(postData),
             success: function(data) {
@@ -379,6 +477,56 @@
     });
 
 
+        @*$("#AddtoList").click(function () {
+            $.LoadingOverlay("show");
+            var productData = [];
+            $("#Products option:selected").each(function (key, value) {
+                productData.push([$(value).val(), $(value).attr('QTY'),@Model.id,$(".Warehouse").val()])
+            })
+            console.log(productData);
+              $.ajax({
+                type: "POST",
+                url: '@Url.Action("SendToLedger", "Sales_Order")',
+                contentType: "application/json; charset=utf-8",
+                   async: false,
+                  data: JSON.stringify({ values: productData }),
+                  success: function (data) {
+                      $.LoadingOverlay("hide");
+                    //$.each(data, function (key, value) {
+                    // //   $("#Products").append("<option value=\""+ value.ProductId + "\">"+value.ProductSerial+"</option>")
+                    //})
+                }
+            });
+            Swal.fire('', 'Added to list.', 'success');
+            $("#Products").empty();
+            LoadProducts();
+            LoadYetToSale(@Model.id);
+        })*@
+
+
+        $("#AddtoList").click(function () {
+    $.LoadingOverlay("show");
+    var productData = [];
+    $("#Products option:selected").each(function (key, value) {
+        productData.push([$(value).val(), $(value).attr('QTY'),@Model.id,$(".Warehouse").val()])
+    })
+    console.log(productData);
+    $.ajax({
+        type: "POST",
+        url: '@Url.Action("SendToLedger", "Sales_Order")',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({ values: productData }),
+        success: function (data) {
+            $.LoadingOverlay("hide");
+            Swal.fire('', 'Added to list.', 'success');
+            $("#Products").empty();
+            LoadProducts();
+            LoadYetToSale(@Model.id);
+        }
+    }).done(function() {
+        // this code will execute after the AJAX call is complete
+    });
+});
 
 
     $("#SubmitBtn").click(function() {
@@ -400,11 +548,11 @@
         }
 
 
-        Order_No = $("#order_no").val();
+        OrderId = @Model.id;
         Lot_Number = $("#Lot").val();
 
         var OrderLot = [];
-        OrderLot = [Order_No, Lot_Number]
+        OrderLot = [OrderId, Lot_Number]
 
 
         var postData = {
@@ -416,207 +564,115 @@
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(postData),
             success: function(data) {
+                Swal.fire('Submitted', 'Sales order submitted successfully!', 'success').then(function () {
+                         location.replace('@Url.Action("Edit", "Sales_Order")');
+                })
 
-                alert("Success")
             }
         });
         $(this).prop("disabled", true);
     });
 
+                $(document).on("click", "#YetToSaleItemDelete", function() {
 
-    @*$("#Gen").click(function() {
-        $("#GeneratedRows").empty();
-        $.blockUI.defaults = {
-            timeout: 0,
-            overlayCSS: {
-                backgroundColor: '#fff',
-                opacity: 0.7,
-                cursor: 'wait'
-            },
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d93232',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.LoadingOverlay("show");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteYetToSale", "Sales_Order")',
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify({
+                    id: $(this).val()
+                }),
+                success: function(data) {
+                    if (data == "Success") {
+                        Swal.fire(
+                            'Removed!',
+                            'Product Removed.',
+                            'success'
+                        )
+                        LoadProducts();
+                        LoadYetToSale(@Model.id)
+                        $.LoadingOverlay("hide");
+                    } else {
+                        Swal.fire(
+                            'Removal Failed!',
+                            data,
+                            'error'
+                        )
+                        $.LoadingOverlay("hide");
+                    }
+                }
+            })
+            //alert("hi")
+        }
+    });
+        });
+
+  function LoadYetToSale(orderId) {
+    $.ajax({
+        type: "POST",
+        url: '@Url.Action("YetToSaleItems", "Sales_Order")',
+        contentType: "application/json;charset=utf-8",
+
+        data: JSON.stringify({
+            id: orderId
+        }),
+        async: false,
+        success: function (data) {
+            console.log(data.length)
+            if (data.length === 0) {
+                $("#UpdateBtn").show();
+                $("#SubmitBtn").hide();
+                EnableInputs();
+            }
+            else {
+                $("#UpdateBtn").hide();
+                $("#SubmitBtn").show();
+                DisableInputs();
+            }
+            $("#YetToSale").empty();
+            var counter = 0;
+            var datalength = data.length;
+            $.each(data, function(key, value) {
+
+
+                $("#YetToSale").append("<tr><td>" + (datalength - counter) + "</td><td>" + value.Product.Product_Type.type_name + "</td><td>" + value.Product.product_serial + "</td><td>" + value.sale_count + "</td><td></td><td>" + moment(value.arrival_date).format("h:mm:ss a") + "</td><td class=\"hh\"><button   id=\"YetToSaleItemDelete\"  value=\"" + value.id + "\" class=\"btn-icon btn-icon-only btn btn-danger\"><i class=\"icon ion-android-close\"></i></button></td></tr>");
+                counter++;
+
+            });
+        }
+    })
+
+            if ($("#status").val() == "C") {
+                $("input, button, select").prop('disabled', true)
+                $("#SubmitBtn").hide();
+            }
+        }
+
+
+        function DisableInputs() {
+
+            $(".OrderArea input,.OrderArea select").prop('disabled', true);
+
+
+        }
+        function EnableInputs() {
+
+            $(".OrderArea input,.OrderArea select").prop('disabled', false);
 
         }
 
-        var CPL = [$("#Companyid").val(), $("#order_no").val(), $("#Lot").val()];
-        $("#sell_date").empty();
-        $("#lc_number").empty();
-        $("#lc_date").empty();
-        var postData = {
-            cpl: CPL
-        };
-        $.blockUI({
-            message: $('.body-block-example-2')
-        });
-
-
-        $.ajax({
-
-            type: "POST",
-            url: '@Url.Action("GetFormData", "Sales_Order")',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(postData),
-            success: function(data) {
-                if (data[0][0] == "F") {
-                    $(".Header_Section_1").show();
-                    $(".Header_Section_2").show();
-                    $(".ProductAttr_Section").show();
-                    $(".ProductDtl_Section").show();
-                    $(".Button_Section").show();
-                    var pid = data[1][0].Product_Typeid;
-                    var mui = data[1][0].Unit_Measurementid
-                    var mfv = data[1][0].sale_count
-                    var AllData = data;
-                    LoadDynamicFeature(pid)
-                    Filldata(AllData[3])
-                    // Dyna Attr
-                    //var jsons = {
-                    //    id: pid
-                    //}
-
-
-                    // Dyna Attr
-
-                    // Site and Warehouse
-                    var json = {
-                        id: AllData[1][0].Companyid
-                    }
-                    $.ajax({
-                        type: "POST",
-                        url: '@Url.Action("GetSite", "Purchase_Order")',
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify(json),
-                        success: function(data) {
-                            $(".SiteLoader").empty();
-                            $(".SiteLoader").append("<div class=\"position-relative form-group\"><label for=\"\" class=\"\">Site</label><select class=\"form-control Site\"></select></div>")
-                            $.each(data, function(key, value) {
-                                $(".Site").append("<option value=\"" + value.Locations.id + "\">" + value.Locations.name + "</option>");
-                            });
-                            $(".Site").val(AllData[4][0].parent_location);
-                            var siteid = $(".Site").val();
-                            if (siteid != undefined && siteid != '') {
-                                var json = {
-                                    id: siteid
-                                }
-                                $.ajax({
-                                    type: "POST",
-                                    url: '@Url.Action("GetWh", "Purchase_Order")',
-                                    contentType: "application/json; charset=utf-8",
-                                    data: JSON.stringify(json),
-                                    success: function(data) {
-                                        $(".WarehouseLoader").empty();
-                                        $(".SiteProductCount").empty();
-                                        $(".WarehouseLoader").append("<div class=\"position-relative form-group\"><label for=\"\" class=\"\">Warehouse</label><select class=\"form-control Warehouse\"></select></div>")
-                                        $(".SiteProductCount").append("<div class=\"position-relative form-group\"><label for=\"\" class=\"\">Count</label><input class=\"form-control SiteProductCountVal  input-mask-trigger\" data-inputmask=\"'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true\" im-insert=\"true\"></div>")
-                                        $.each(data, function(key, value) {
-                                            //alert("hi");
-                                            $(".Warehouse").append("<option value=\"" + value.id + "\">" + value.name + "</option>");
-
-                                        });
-
-                                        $(".Warehouse").val(AllData[4][0].id);
-
-                                    }
-                                });
-                            }
-                        }
-                    });
-
-                    // Site and Warehouse
-
-                    console.log(data[2])
-                    if (data[0][1] == "C") {
-                        $("#Locationid").prop("disabled", true);
-                        $("#Customerid").prop("disabled", true);
-
-                        $("#sell_date").prop("disabled", true);
-                    } else {
-                        $("#Locationid").prop("disabled", false);
-                        $("#Customerid").prop("disabled", false);
-                        //$("#lc_number").prop("disabled", false);
-                        //$("#lc_date").prop("disabled", false);
-                        $("#sell_date").prop("disabled", false);
-                    }
-
-                    $("#sell_date").val(moment(data[1][0].sell_date).format("MM/DD/YYYY"));
-                    //$("#lc_number").val(data[1][0].lc_number);
-                    //$("#lc_date").val(moment(data[1][0].lc_date).format("MM/DD/YYYY"));
-                    $("#Locationid").val(data[1][0].Locationid);
-                    $("#Customerid").val(data[1][0].Customerid);
-                    var Country = $("#Locationid  option:selected").text();
-                    if (Country == 'Bangladesh') {
-                        $("#SalesType").val("Local");
-                    } else {
-                        $("#SalesType").val("Import");
-                    }
-                    $("#Product_Typeid").val(data[1][0].Product_Typeid);
-                    $("#Total_Count").val(data[1][0].qty);
-                    console.log(data[2])
-                    //for (let i = 0; i < data[3].length; i++) {
-                    //    $('#' + data[3][i].Feature.Feature_Typeid).val(data[3][i].Feature.id);
-                    //}
-
-
-                    $("#Delivery_Date").val(moment(data[2][0].arrival_date).format("MM/DD/YYYY"));
-
-                    $(".SiteProductCountVal").val(data[2].length);
-                    $("#GeneratedRows").empty();
-                    //for loop
-                    for (let i = 0; i < $(".SiteProductCountVal").val(); i++) {
-                        $("#GeneratedRows").append("<tr><th class=\"RowNumber\" scope =\"row\">" + (i + 1) + "</th><td><input class=\"form-control SLN\"></td><td><input class=\"form-control QTYVal\"></td><td class =\" Unit\">KG</td></tr>")
-                    }
-                    //$(this).addClass("disabled").attr("disabled", "");
-
-                    for (let i = 0; i < $(".SLN").length; i++) {
-                        $(".SLN:eq(" + i + ")").val(data[2][i].Product.product_serial);
-                        $(".QTYVal:eq(" + i + ")").val(data[2][i].sale_count);
-
-                    }
-                    //alert($(".SLN").length);
-                    // alert("Data Loaded Successfully.")
-
-                } else {
-                    //data is now single dimenssional array.
-                    if (data[0] == "C") {
-                        $(".Header_Section_1").hide();
-                        $(".Header_Section_2").hide();
-                        $(".ProductAttr_Section").hide();
-                        $(".ProductDtl_Section").hide();
-                        $(".Button_Section").hide();
-                        //    alert("This order and Lot is Completed.");
-                    } else {
-                        $(".Header_Section_1").show();
-                        $(".Header_Section_2").show();
-                        $(".ProductAttr_Section").show();
-                        $(".ProductDtl_Section").show();
-                        $(".Button_Section").show();
-
-                        //  alert("Please Enter Data.");
-                    }
-                    if (data[1] == "C") {
-                        //alert(data);
-                        $("#Locationid").prop("disabled", true);
-                        $("#Customerid").prop("disabled", true);
-                        //$("#lc_number").prop("disabled", true);
-                        //$("#lc_date").prop("disabled", true);
-                        $("#sell_date").prop("disabled", true);
-                    } else {
-                        $("#Locationid").prop("disabled", false);
-                        $("#Customerid").prop("disabled", false);
-                        //$("#lc_number").prop("disabled", false);
-                        //$("#lc_date").prop("disabled", false);
-                        $("#sell_date").prop("disabled", false);
-                    }
-
-                }
-                $.unblockUI();
-            }
-
-
-        });
-
-    })*@
-
-
-    function LoadDynamicFeature(productTypeId) {
+        function LoadDynamicFeature(eventType,productTypeId) {
         if (productTypeId != undefined && productTypeId != '') {
             MainFeature_Id = null;
             var json = {
@@ -733,6 +789,40 @@
                             });
                         }
                     })
+
+
+  if (eventType != "change") {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetFeatures", "Sales_Order")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({id: @Model.id}),
+                    async: false,
+                    success: function(dataGetFeatures) {
+                        console.log(dataGetFeatures);
+                        $("#MainFeatureValue").val(@Model.sale_count);
+                        $("#MainUnit").val(@Model.Unit_Measurementid);
+
+                        console.log(dataGetFeatures);
+                        // Loop dynamic attr value
+                        for (let i = 0; i < dataGetFeatures.length; i++) {
+                            if (dataGetFeatures[i].b.status != "T") {
+                                $('#' + dataGetFeatures[i].a.FeatureTypeId).val(dataGetFeatures[i].a.FearureId);
+                            } else {
+                                $('#' + dataGetFeatures[i].a.FeatureTypeId).val(dataGetFeatures[i].a.TxtValue);
+                                $('.DynaComb2FeatureUnit' + dataGetFeatures[i].a.FeatureTypeId).val(dataGetFeatures[i].a.UnitId);
+                            }
+                        }
+                    }
+                })
+
+
+
+
+            }
+
+
+                    LoadSalesInfo(@Model.id)
                 }
             });
         }
@@ -740,6 +830,37 @@
 
     }
 
+                function LoadSalesInfo(orderId) {
+               $.ajax({
+        type: "POST",
+        url: '@Url.Action("GetSalesOrderInfo", "Sales_Order")',
+                   contentType: "application/json; charset=utf-8",
+                   async:false,
+        data: JSON.stringify({
+            id: orderId
+        }),
+                   success: function (data) {
+                       console.log(data)
+                       $("#Lot").val(data[0].Lot)
+                       $("#Delivery_Date").val(moment(data[0].DeliveryDate).format("MM/DD/YYYY"))
+                       @*$("#Company1").val(@Model.from_company_id);
+                       $("#Company2").val(@Model.to_company_id);
+                       LoadSite($("#Company1").val(), 1);
+                       LoadSite($("#Company2").val(), 2);
+                       $("#Site1").val(data[0].FromSite);
+                       $("#Site2").val(data[0].ToSite);
+                       LoadWarehouse($("#Site1").val(), 1);
+                       LoadWarehouse($("#Site2").val(), 2);
+                       $("#Warehouse1").val(data[0].FromWarehouse);
+                       $("#Warehouse2").val(data[0].ToWarehouse);
+
+                       $.each(data, function (key, value) {
+                           //alert(key);
+                           //LoadSite($("#Company"+key+1).val(), key+1);
+                       })*@
+        }
+    });
+  }
 
     function Filldata(dataGetFeatures) {
         // console.log(dataGetFeatures);
@@ -754,7 +875,29 @@
 
             //$('#' + dt[i].Feature.Feature_Typeid).val(dt[i].Feature.id);
         }
-    }
+        }
+
+
+
+                function LoadProducts() {
+                    var OrderData = [@Model.id, $("#Product_Typeid").val(), $("#Companyid").val()]
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetProducts", "Sales_Order")',
+                contentType: "application/json; charset=utf-8",
+                async: false,
+                data: JSON.stringify({ values: OrderData }),
+                success: function (data) {
+                    console.log(data)
+                    $("#Products").empty();
+                    $.each(data, function (key, value) {
+                        $("#Products").append("<option QTY=" + value.QTY+" value=\""+ value.ProductId + "\">"+value.Serial+"</option>")
+                    })
+                }
+            });
+
+        }
+
 
     $('body').on('blur', '.SLN', function() {
         $(this).attr('value', $(this).val());
@@ -766,10 +909,65 @@
             $(this).removeClass("is-invalid");
         }
     });
+                $("#Companyid").change(function () {
+            var compid = $(this).val();
 
+                if (compid != undefined && compid != '') {
+        var json = {
+            id: compid
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetSite", "Purchase_Order")',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(json),
+            success: function(data) {
+                $(".SiteLoader").empty();
+                $(".SiteLoader").append("<div class=\"position-relative form-group\"><label for=\"\" class=\"\">Site</label><select class=\"form-control Site\"></select></div>")
+                $.each(data, function(key, value) {
+                    $(".Site").append("<option value=\"" + value.Locations.id + "\">" + value.Locations.name + "</option>");
+                });
+
+                var siteid = $(".Site").val();
+                if (siteid != undefined && siteid != '') {
+                    var json = {
+                        id: siteid
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("GetWh", "Purchase_Order")',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(json),
+                        success: function(data) {
+                            $(".WarehouseLoader").empty();
+                            $(".SiteProductCount").empty();
+                            $(".WarehouseLoader").append("<div class=\"position-relative form-group\"><label for=\"\" class=\"\">Warehouse</label><select class=\"form-control Warehouse\"></select></div>")
+                            $(".SiteProductCount").append("<div class=\"position-relative form-group\"><label for=\"\" class=\"\">Count</label><input class=\"form-control SiteProductCountVal  input-mask-trigger\" data-inputmask=\"'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true\" im-insert=\"true\"></div>")
+                            $.each(data, function(key, value) {
+                                //alert("hi");
+                                $(".Warehouse").append("<option value=\"" + value.id + "\">" + value.name + "</option>");
+
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    }
+        })
     $(document.body).on("change", ".FeaturesTxtBoxUnit", function() {
         $(".Text" + $(this).attr("id")).attr("UnitValue", $(this).val())
     })
+
+        $(document.body).on("change", "#Locationid", function () {
+            var Country = $("#Locationid  option:selected").text();
+            if (Country == 'Bangladesh') {
+                $("#SalesType").val("Local");
+            } else {
+                $("#SalesType").val("Import");
+            }
+        })
+
     </script>
 
 }

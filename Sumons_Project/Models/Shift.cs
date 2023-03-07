@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using System.Xml.Linq;
 
 namespace BJProduction.Models
 {
@@ -10,6 +12,7 @@ namespace BJProduction.Models
     {
         public int id { get; set; }
         public string shift_code { get; set; }
+        [Display(Name = "Shift")]
         public string name { get; set; }
         public int duration { get; set; }
         public int Unit_Measurementid { get; set; }

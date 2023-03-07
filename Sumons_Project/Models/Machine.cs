@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Xml.Linq;
 
 namespace BJProduction.Models
 {
     public class Machine
     {
         public int id { get; set; }
+        [Display(Name = "Machine")]
         public string name { get; set; }
         public int Machine_Typeid { get; set; }
         public Machine_Type Machine_Type { get; set; }

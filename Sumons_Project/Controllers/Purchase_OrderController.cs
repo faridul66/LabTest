@@ -13,6 +13,7 @@ using Microsoft.AspNet.Identity.Owin;
 
 namespace BJProduction.Controllers
 {
+    [Authorize]
     public class Purchase_OrderController : Controller
     {
 
@@ -227,9 +228,11 @@ namespace BJProduction.Controllers
         {
             var orderNo = values[0];
             var lotNumber = values[1];
+            var vendorId = Convert.ToInt32(values[2]);
+            var companyId = Convert.ToInt32(values[3]);
             var transTypeId = db.Transaction_Type.FirstOrDefault(x => x.type_code == "PO").id;
-            var orderId = db.Purchase_Order.FirstOrDefault(x => x.order_no == orderNo).id;
-            List<int> purchaseLedger = db.Purchase_Ledger.Include(x => x.Purchase_Order).Where(x => x.Purchase_Order.order_no == orderNo && x.lot_number == lotNumber).Select(x => x.id).ToList();
+            var orderId = db.Purchase_Order.FirstOrDefault(x => x.order_no == orderNo && x.Companyid==companyId && x.Vendorid==vendorId).id;
+            List<int> purchaseLedger = db.Purchase_Ledger.Where(x => x.Purchase_Orderid == orderId && x.lot_number == lotNumber).Select(x => x.id).ToList();
             foreach (var items in purchaseLedger)
             {
                 var ledger = db.Purchase_Ledger.Find(items);
@@ -446,7 +449,7 @@ namespace BJProduction.Controllers
                     messages[1] = "N";
                 }
                 var purchaseOrders = db.Purchase_Order.Where(x => x.order_no == purchaseOrder && x.Companyid == companyId).ToList();
-                var productAndPurchaseLedger = db.Purchase_Ledger.Include(x => x.Product).Include(x => x.Purchase_Order).Where(x => x.lot_number == lotNumber && x.Purchase_Order.order_no == purchaseOrder).ToList();
+                var productAndPurchaseLedger = db.Purchase_Ledger.Include(x => x.Product).Include(x => x.Purchase_Order).Where(x => x.lot_number == lotNumber && x.Purchase_Order.order_no == purchaseOrder && x.Purchase_Order.Companyid == companyId).ToList();
                 var productId = db.Purchase_Ledger.Include(y => y.Product).Include(y => y.Purchase_Order).Where(y => y.lot_number == lotNumber && y.Purchase_Order.order_no == purchaseOrder && y.Purchase_Order.Companyid==companyId).FirstOrDefault().Productid;
                 var productFeature = db.Product_Feature.Include(x => x.Feature).Include(x => x.Feature.Feature_Type).Where(x => x.Productid == productId).ToList();
                 var warehouseId = db.Purchase_Ledger.Include(x => x.Purchase_Order).Where(x => x.lot_number == lotNumber && x.Purchase_Order.order_no == purchaseOrder && x.Purchase_Order.Companyid == companyId).FirstOrDefault().Locationid;

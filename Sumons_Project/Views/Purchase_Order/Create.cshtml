@@ -4,7 +4,6 @@
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/index.cshtml";
 }
-
 <div class="main-card mb-3 card animated fadeIn ">
     <div class="card-body">
         <h5 class="card-title">Purchase Order</h5>
@@ -166,6 +165,40 @@
 
 @section scripts{
     <script type="text/javascript">
+
+        $("#CM").click(function () {
+            $.blockUI.defaults = {
+                timeout: 0,
+                overlayCSS: {
+                    backgroundColor: '#fff',
+                    opacity: 0.7,
+                    cursor: 'wait'
+                },
+
+            }
+
+            $.blockUI({
+                message: $('.body-block-example-2')
+            });
+
+        })
+        $(window).on('load', function () {
+
+
+            $.blockUI.defaults = {
+                timeout: 0,
+                overlayCSS: {
+                    backgroundColor: '#fff',
+                    opacity: 0.7,
+                    cursor: 'wait'
+                },
+            }
+            $.blockUI({
+                message: $('.body-block-example-2')
+            });
+
+        });
+
  $(document.body).on("click", "#GenerateDBtn", function() {
 
     var SiteProductCount = $(".SiteProductCountVal").val();
@@ -328,6 +361,8 @@ $(document).ready(function() {
     $(".ProductAttr_Section").hide();
     $(".ProductDtl_Section").hide();
     $(".Button_Section").hide();
+
+    $.unblockUI();
 });
 
 
@@ -376,7 +411,19 @@ var Dynamic_Attr = [],
     VarData = [],
     DTS = [];
 
-$("#SBTN").click(function() {
+        $("#SBTN").click(function () {
+            $.blockUI.defaults = {
+                timeout: 0,
+                overlayCSS: {
+                    backgroundColor: '#fff',
+                    opacity: 0.7,
+                    cursor: 'wait'
+                },
+            }
+            $.blockUI({
+                message: $('.body-block-example-2')
+            });
+
     toastr.options = {
         "closeButton": true,
         "debug": false,
@@ -440,8 +487,11 @@ $("#SBTN").click(function() {
         type: "POST",
         url: '@Url.Action("SaveData", "Purchase_Order")',
         contentType: "application/json; charset=utf-8",
+        async:false,
         data: JSON.stringify(postData),
-        success: function(data) {
+        success: function (data) {
+            $.unblockUI();
+            Swal.fire('','Data Saved','success')
             //alert(data);
             //if (data.length != null) {
 
@@ -478,9 +528,11 @@ $("#SubmitBtn").click(function() {
 
     Order_No = $("#order_no").val();
     Lot_Number = $("#Lot").val();
+    VendorId = $("#Vendorid").val();
+    CompanyId = $("#Companyid").val();
 
     var OrderLot = [];
-    OrderLot = [Order_No, Lot_Number]
+    OrderLot = [Order_No, Lot_Number, VendorId, CompanyId]
 
 
     var postData = {
@@ -493,7 +545,7 @@ $("#SubmitBtn").click(function() {
         data: JSON.stringify(postData),
         success: function(data) {
 
-            alert("Success")
+            Swal.fire('Submitted','Purchase order has been submitted','success')
         }
     });
     $(this).prop("disabled", true);
@@ -502,7 +554,8 @@ $("#SubmitBtn").click(function() {
 
 
 
-$("#Gen").click(function() {
+        $("#Gen").click(function () {
+
     $("#GeneratedRows").empty();
     $.blockUI.defaults = {
         timeout: 0,
@@ -513,6 +566,10 @@ $("#Gen").click(function() {
         },
 
     }
+    $.blockUI({
+        message: $('.body-block-example-2')
+    });
+
 
     var AllData;
     var CPL = [$("#Companyid").val(), $("#order_no").val(), $("#Lot").val()];
@@ -522,9 +579,7 @@ $("#Gen").click(function() {
     var postData = {
         cpl: CPL
     };
-    $.blockUI({
-        message: $('.body-block-example-2')
-    });
+
 
 
     $.ajax({
@@ -668,6 +723,7 @@ $("#Gen").click(function() {
                     $(".ProductAttr_Section").hide();
                     $(".ProductDtl_Section").hide();
                     $(".Button_Section").hide();
+                    Swal.fire('Completed', 'Purchase order already completed!', 'info')
                     //    alert("This order and Lot is Completed.");
                 }
                 else {
@@ -696,9 +752,10 @@ $("#Gen").click(function() {
                 }
 
             }
-            $.unblockUI();
+           
+$.unblockUI(); 
         }
-
+        //end success
 
     });
 
@@ -918,6 +975,8 @@ function Filldata(dataGetFeatures) {
             }
         })
 
+    
+    
     </script>
 
 }

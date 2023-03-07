@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Xml.Linq;
 
 namespace BJProduction.Models
 {
@@ -13,7 +15,7 @@ namespace BJProduction.Models
         public string product_serial { get; set; }
         public string status { get; set; }
         public string chged_by { get; set; }
-        public DateTime chgd_date { get; set; } = DateTime.UtcNow;
+        public DateTime chgd_date { get; set; } = DateTime.Now;
     }
 
     public class Product_Type
@@ -21,10 +23,11 @@ namespace BJProduction.Models
         public int id { get; set; }
         public int? parent_type { get; set; }
         public string type_code { get; set; }
+        [Display(Name = "Product")]
         public string type_name { get; set; }
         public string status { get; set; }
         public string chged_by { get; set; }
-        public DateTime chgd_date { get; set; } = DateTime.UtcNow;
+        public DateTime chgd_date { get; set; } = DateTime.Now;
 
     }
 
@@ -36,7 +39,7 @@ namespace BJProduction.Models
         public string type_name { get; set; }
         public string status { get; set; }
         public string chged_by { get; set; }
-        public DateTime chgd_date { get; set; } = DateTime.UtcNow;
+        public DateTime chgd_date { get; set; } = DateTime.Now;
 
     }
 
@@ -49,7 +52,7 @@ namespace BJProduction.Models
         public string feature_name { get; set; }
         public string status { get; set; }
         public string chged_by { get; set; }
-        public DateTime chgd_date { get; set; } = DateTime.UtcNow;
+        public DateTime chgd_date { get; set; } = DateTime.Now;
     }
 
     public class Product_Feature
@@ -64,7 +67,7 @@ namespace BJProduction.Models
         public Unit_Measurement Unit_Measurement { get; set; }
         public string status { get; set; }
         public string chged_by { get; set; }
-        public DateTime chgd_date { get; set; } = DateTime.UtcNow;
+        public DateTime chgd_date { get; set; } = DateTime.Now;
     }
 
 
@@ -77,7 +80,7 @@ namespace BJProduction.Models
         public int? parent_sum { get; set; }
         public string status { get; set; }
         public string chged_by { get; set; }
-        public DateTime chgd_date { get; set; } = DateTime.UtcNow;
+        public DateTime chgd_date { get; set; } = DateTime.Now;
 
     }
 
@@ -93,7 +96,7 @@ namespace BJProduction.Models
         public Feature_Type Feature_Type { get; set; }
         public string status { get; set; }
         public string chged_by { get; set; }
-        public DateTime chgd_date { get; set; } = DateTime.UtcNow;
+        public DateTime chgd_date { get; set; } = DateTime.Now;
     }
 
 
@@ -109,7 +112,7 @@ namespace BJProduction.Models
 
         public string status { get; set; }
         public string chged_by { get; set; }
-        public DateTime chgd_date { get; set; } = DateTime.UtcNow;
+        public DateTime chgd_date { get; set; } = DateTime.Now;
     }
 
     public class ProductToConsume
