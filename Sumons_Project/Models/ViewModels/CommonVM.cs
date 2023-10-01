@@ -7,6 +7,8 @@ namespace LabTestRegister.Models.ViewModels
 {
     public class CommonVM
     {
+
+
         public string Id { get; set; }
         public string StatusCode { get; set; }
         public string StatusMessage { get; set; }
