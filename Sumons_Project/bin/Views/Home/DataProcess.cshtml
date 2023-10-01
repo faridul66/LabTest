@@ -1,0 +1,276 @@
+@model IEnumerable<LabTestRegister.Models.Category>
+@using System.Web.UI.WebControls
+@using Payroll.Models;
+
+
+<link href="~/Content/jsTree/themes/default/style.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<link href="~/Content/toastr.min.css" rel="stylesheet" />
+
+@Html.Hidden("esc")
+<div class="box box-info">
+    <div class="box-header with-border">
+        <h3 class="box-title">Data Process</h3>
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+    <div class="form-horizontal">
+        <div class="box-body">
+            <div class="form-group">
+                <label class="col-md-2">Company</label>
+                <label class="col-md-10">@ViewBag.Company</label>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2">Branch</label>
+                <label class="col-md-10">@ViewBag.Branch</label>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2">Select Date Range</label>
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <div class="input-group-addon ">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input id="Date_Range" class="form-control" type="text" name="daterange" value="" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2">Select Suitable Options</label>
+                <div class="col-md-10">
+                    <label class="checkbox-inline"><input class="check-box" id="unrest" name="unrest" type="checkbox" value="">Unrest</label>
+                    <label class="checkbox-inline"><input class="check-box" id="overnight" name="overnight" type="checkbox" value="">Over Night</label>
+                    <label class="checkbox-inline"><input class="check-box" id="wh" name="wh" type="checkbox" value="">Forcely Make Weekly Holiday</label>
+                    <label class="checkbox-inline"><input class="check-box" id="rdf" name="rdf" type="checkbox" value="">Forcely Make Reguler Duty</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="sel1" class="col-md-2">Select Season</label>
+                <div class="col-md-10">
+                    <select class="form-control" id="sel1">
+                        <option>Summer</option>
+                        <option>Ramadan</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-md-12">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                        <input id="Searchbox" type="text" class="form-control input" placeholder="Search By Id, Name or Section">
+                    </div>
+                </div>
+            </div>
+            <label>ID Selected <span class="badge" id="idslc">0</span></label>
+
+            <div id="html1">
+                @(Html.TreeView(Model).EmptyContent("All Employee").Children(m => m.Childs).HtmlAttributes(new { id = "tree" }).ChildrenHtmlAttributes(new { @class = "subItem" }).ItemText(m => m.Name).ItemTemplate(@<text><a href="@item.Description" desc="@item.Description">@item.Name</a></text>))
+            </div>
+
+
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+            @Html.ActionLink("Back", "DataProcesss", "Home", new { @class = "btn btn-default" })
+            <button type="submit" class="btn btn-success pull-right" id="Processbtn">Save</button>
+        </div>
+        <!-- /.box-footer -->
+    </div>
+
+</div>
+
+@section scripts
+{
+
+    <script src="~/Scripts/jsTree3/jstree.min.js"></script>
+    <script src="~/Scripts/toastr.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/Overlayjs.js"></script>
+    <script>
+
+        $(document).ready(function (e) {
+            //set initial state.
+            document.getElementById("overnight").checked = true;
+            $("#wh").change(function () {
+
+                if ($(this).is(":checked")) {
+                    document.getElementById("rdf").checked = false;
+                }
+            });
+            $("#rdf").change(function () {
+
+                if ($(this).is(":checked")) {
+                    document.getElementById("wh").checked = false;
+                }
+            });
+        });
+
+
+
+        $(function () {
+            $("#html1").jstree({
+                "plugins": ["search", "checkbox", "wholerow"]
+            });
+            var to = false;
+            $('#Searchbox').keyup(function () {
+                if (to) { clearTimeout(to); }
+                to = setTimeout(function () {
+                    var v = $('#Searchbox').val();
+                    $('#html1').jstree(true).search(v);
+                }, 250);
+
+            });
+            $('#html1').on('changed.jstree', function (e, data) {
+                var i, j, r = [];
+                for (i = 0, j = data.selected.length; i < j; i++) {
+                    if (data.instance.get_node(data.instance.get_node(data.selected[i]).id).children.length < 1) {
+                        //r.push('ID: ' + data.instance.get_node(data.selected[i]).id + ' ' + 'Text: ' + data.instance.get_node(data.selected[i]).text + '\r\n');
+                        r.push(data.instance.get_node(data.selected[i]).id);
+                    }
+                }
+                $('#idslc').html(r.length);
+                $('#esc').val(r.length);
+            }).jstree();
+        });
+        $("#Processbtn").click(function () {
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": true,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "30000",
+                "extendedTimeOut": "30000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+
+            }
+            if ($('#esc').val() > 0) {
+            $('.form-horizontal').LoadingOverlay("show")
+            var i, j, r = [];
+            var param0arr = [], paramCarr = [],unrst,ovn,mwh,mrd,ssn;
+            var data = $("#html1").jstree("get_selected", true);
+            for (i = 0, j = data.length; i < j; i++) {
+                if (data[i].children.length < 1) {
+                    //r.push('ID: ' + data.instance.get_node(data.selected[i]).id + ' ' + 'Text: ' + data.instance.get_node(data.selected[i]).text + '\r\n');
+                    r.push(data[i].id);
+                }
+            }
+            daterange = $("#Date_Range").val();
+            unrst = document.getElementById("unrest").checked;
+            ovn = document.getElementById("overnight").checked;
+            mwh = document.getElementById("wh").checked
+            mrd = document.getElementById("rdf").checked
+            ssn = $("#sel1").val()
+            param0arr = [daterange, unrst,ovn, mwh, mrd, ssn];
+            paramCarr = [param0arr, r];
+            //console.log($("#html1").jstree("get_selected", true))
+            var postData = { values: paramCarr };
+                  $.ajax({
+                    type: "POST",
+                    //url: "/ProjectReport/GetReportName",
+                    url: '@Url.Action("DataProcess", "Home")',
+                    contentType: "application/json; charset=utf-8",
+                      data: JSON.stringify(postData),
+                      success: function (data) {
+                          $('.form-horizontal').LoadingOverlay("hide")
+                          if (data[0].length > 0) {
+                              if (data[0].length == 1) {
+                                  toastr.success(data[0].length + ' Record has been processed.', 'Data Processed!');
+                              }
+                              else {
+                                  toastr.success(data[0].length + ' Records have been processed.', 'Data Processed!');
+                              }
+
+                          }
+
+
+                          if (data[1].length > 0) {
+                              //var i;
+                              //for (i = 0; i < data[2].length; i++) {
+                              //    toastr.error('Schedule not created for ' + data[2][i], 'Schedule Not Found!');
+
+                              //}
+                              //if (data[1].length >= 4) {
+                              //    toastr.warning('OT has been reduced for </br>' + data[1].join(", "), 'OT Reduced!', { allowHtml: true, "positionClass": "toast-bottom-full-width" });
+
+                              //}
+                              //else {
+                                  toastr.warning('OT has been reduced for </br>' + data[1].join(",</br>"), 'OT Reduced!');
+
+                              //}
+                          }
+                          if (data[2].length > 0) {
+                              //var i;
+                              //for (i = 0; i < data[2].length; i++) {
+                              //    toastr.error('Schedule not created for ' + data[2][i], 'Schedule Not Found!');
+
+                              //}
+                              if (data[2].length >= 16) {
+                                  toastr.error('Schedules have not created for </br>' + data[2].join(", "), 'Schedule Not Found!', { allowHtml: true, "positionClass": "toast-bottom-full-width"});
+
+                              }
+                              else if (data[2].length == 1) {
+                                  toastr.error('Schedule has not created for </br>' + data[2], 'Schedule Not Found!');
+
+                              }
+                              else {
+                              toastr.error('Schedules have not created for </br>' + data[2].join(",</br>"), 'Schedule Not Found!');
+
+                          }
+                              
+                          }
+
+
+
+                          if (data[3].length > 0) {
+                              //var i;
+                              //for (i = 0; i < data[2].length; i++) {
+                              //    toastr.error('Schedule not created for ' + data[2][i], 'Schedule Not Found!');
+
+                              //}
+                              if (data[3].length >= 16) {
+                                  toastr.error('Data not processed for </br>' + data[3].join(", "), 'Critical Error!', { allowHtml: true, "positionClass": "toast-bottom-full-width" });
+
+                              }
+                              else if (data[3].length == 1) {
+                                  toastr.error('Data not processed for </br>' + data[3], 'Critical Error!');
+
+                              }
+                              else {
+                                  toastr.error('Data not processed for </br>' + data[3].join(",</br>"), 'Critical Error!');
+
+                              }
+
+                          }
+
+
+
+
+                      }
+                });
+            }
+            else {
+                toastr.error('No Employee ID selected. At least one Employee should be selected.', 'Wait!');
+            }
+        });
+    </script>
+    <script>
+        $(function () {
+            $('input[name="daterange"]').daterangepicker({
+                opens: 'right'
+            }, function (start, end, label) {
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            });
+        });
+    </script>
+
+}
