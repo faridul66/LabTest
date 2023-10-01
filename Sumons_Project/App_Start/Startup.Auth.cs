@@ -2,11 +2,11 @@
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
-using BJProduction.Models;
+using LabTestRegister.Models;
 using Owin;
 using System;
 
-namespace BJProduction
+namespace LabTestRegister
 {
     public partial class Startup
     {

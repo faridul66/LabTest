@@ -3,7 +3,7 @@ using Microsoft.Owin.Security;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace BJProduction.Models
+namespace LabTestRegister.Models
 {
     public class IndexViewModel
     {

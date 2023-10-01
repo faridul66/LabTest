@@ -1,0 +1,401 @@
+﻿@model IEnumerable<LabTestRegister.Models.ViewModels.LabReportVM>
+@{
+    ViewBag.Title = "rptLabReportPdf";
+    Layout = null;
+    int count = 0;
+    int count1 = 0;
+    decimal Avg1 = 0, Avg2 = 0, Avg3 = 0, Avg4 = 0, Avg5 = 0, Avg6 = 0, Avg7 = 0;
+    decimal re1 = 0, re2 = 0, re3 = 0, re4 = 0, re5 = 0, re6 = 0, re7 = 0;
+    decimal CVA1 = 0, CVA2 = 0, CVA3 = 0, CVA4 = 0, CVA5 = 0, CVA6 = 0, CVA7 = 0;
+    decimal CVE1 = 0, CVE2 = 0, CVE3 = 0, CVE4 = 0, CVE5 = 0, CVE6 = 0, CVE7 = 0;
+    decimal Sum1 = 0;
+    decimal Sum2 = 0;
+    decimal Sum3 = 0;
+    decimal Sum4 = 0;
+    decimal Sum5 = 0;
+    decimal Sum6 = 0;
+    decimal Sum7 = 0;
+    decimal SDA1 = 0;
+    decimal SDA2 = 0;
+    decimal SDA3 = 0;
+    decimal SDA4 = 0;
+    decimal SDA5 = 0;
+    decimal SDA6 = 0;
+    decimal SDA7 = 0;
+    decimal SDE1 = 0;
+    decimal SDE2 = 0;
+    decimal SDE3 = 0;
+    decimal SDE4 = 0;
+    decimal SDE5 = 0;
+    decimal SDE6 = 0;
+    decimal SDE7 = 0;
+    decimal val1 = 0;
+    decimal val2 = 0;
+    decimal val3 = 0;
+    decimal val4 = 0;
+    decimal val5 = 0;
+    decimal val6 = 0;
+    decimal val7 = 0;
+
+}
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Asset/KendoUI/JS/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Asset/KendoUI/JS/kendo.default.min.css" rel="stylesheet" />
+<link href="~/Asset/KendoUI/JS/kendo.default.mobile.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2023.1.117/styles/kendo.default-main.min.css">
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/jquery-3.6.1.min.js"></script>
+<script src="~/Scripts/toastr.min.js"></script>
+<script src="~/Scripts/toastr.js"></script>
+<script src="https://kendo.cdn.telerik.com/2023.1.117/js/jquery.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2023.1.117/js/kendo.all.min.js"></script>
+<title>Lab Report</title>
+
+<style>
+    hr {
+        border: 1px solid #000000;
+        border-style: none none solid;
+        color: black;
+    }
+
+    tr {
+        page-break-inside: avoid;
+    }
+
+    .breakhere {
+        page-break-after: always;
+    }
+</style>
+
+@*var gatePassList = []; // declare an empty array
+
+    @foreach (var gatePass in Model)
+    {
+        <text>
+            gatePassList.push({
+            gatePassProperty1: "@gatePass.CompanyName",
+            gatePassProperty2: "@gatePass.",
+            // add more properties as needed
+            });
+        </text>
+    }*@
+<div id="toReport" class="panel-body" style="margin: auto; text-align:center !important; width:100%; height:100%">
+    <br />
+    <table>
+        <tr>
+            <td>Test Report No : <span>@ViewBag.LabReportNo</span></td>
+        </tr>
+        <tr><td>Date : <span >@ViewBag.TestDate</span></td></tr>
+        <tr><td>Customer Name : <span>@ViewBag.CustomerName</span></td></tr>
+        <tr><td>Address and Contact details : <span>@ViewBag.Adderss</span></td></tr>
+        <tr><td>Date and received sample : <span>@ViewBag.SRDate</span></td></tr>
+        <tr><td>Test Period : <span>@ViewBag.TestPeriod</span></td></tr>
+        <tr><td>Sample Reference ID,Quantity name and Details : <span>@ViewBag.ReferenceId</span></td></tr>
+        <tr><td>Number of Sample : <span>@ViewBag.NoSample</span></td></tr>
+        <tr><td>Sample Description : <span>@ViewBag.Description</span></td></tr>
+        <tr><td>Fibre Details : <span>@ViewBag.FDetails</span></td></tr>
+    </table>
+    <div class="panel-body" style="text-align:center;">
+        <table cellpadding="5" cellspacing="1" style="width: 100%; border: 1px solid; border-collapse: collapse;" id="report">
+            <tbody id="tbodyId">
+                <tr>
+                    <th colspan="3" style="text-align: center; border: 1px solid; font-size: 17px">Physical Properties</th>
+                    <th colspan="5" style="text-align: center; border: 1px solid; font-size: 17px">Mechanical Properties</th>
+                </tr>
+                <tr style="background-color: #dae8f7; color: #5D7B9D;border:1px solid">
+                    <th style="text-align: center; border: 1px solid; font-size: 17px">Test Name</th>
+                    <th style="text-align: center; border: 1px solid; font-size: 17px"><b>Mass per unit area,gm/m2</b></th>
+                    <th style="text-align: center; border: 1px solid; font-size: 17px"><b>Thickness,mm</b></th>
+                    <th style="text-align: center; border: 1px solid; font-size: 17px"><b>Static Puncture Test(CBR) Load,N</b></th>
+                    <th style="text-align: center; border: 1px solid; font-size: 17px"><b>Wide-width tensile strength,KN/m(CMD)</b></th>
+                    <th style="text-align: center; border: 1px solid; font-size: 17px"><b>Wide-width tensile Elogation, %(CMD)</b></th>
+                    <th style="text-align: center; border: 1px solid; font-size: 17px"><b>Wide-width tensile strength,KN/m(MD)</b></th>
+                    <th style="text-align: center; border: 1px solid; font-size: 17px"><b>Wide-width tensile Elogation, %(MD)</b></th>
+                </tr>
+                <tr style=" border: 1px solid; ">
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        Test Method
+                    </td>
+                    <td style="width: 50px; text-align: center; border: 1px solid; font-size: 17px">
+                        ISO-9864:2005
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        ISO-9863-1:2005
+                    </td>
+                    <td style="width: 650px; text-align: left; border: 1px solid; font-size: 17px">
+                        ISO-12236:2006
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        ISO 10319 :2015
+                    </td>
+                    <td style="width: 117px; text-align: left; border: 1px solid; font-size: 17px">
+                        ISO 10319 : 2015
+                    </td>
+                    <td style="width: 60px; text-align: center; border: 1px solid; font-size: 17px">
+                        ISO 10319 : 2015
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        ISO 10319: 2015
+                    </td>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    count++;
+                    if (count != 1)
+                    {
+                        Sum1 = Sum1 + item.Spec1;
+                        Sum2 = Sum2 + item.Spec2;
+                        Sum3 = Sum3 + item.Spec3;
+                        Sum4 = Sum4 + item.Spec4;
+                        Sum5 = Sum5 + item.Spec5;
+                        Sum6 = Sum6 + item.Spec6;
+                        Sum7 = Sum7 + item.Spec7;
+                    }
+
+            <tr style=" border: 1px solid; ">
+                <td style="width: 50px; text-align: center; border: 1px solid; font-size: 17px">
+                    @Html.DisplayFor(modelItem => item.TestName)
+                </td>
+                <td style="width: 250px; text-align: left; border: 1px solid; font-size: 17px">
+                    @Html.DisplayFor(modelItem => item.Spec1)
+                </td>
+                <td style="width: 250px; text-align: left; border: 1px solid; font-size: 17px">
+                    @Html.DisplayFor(modelItem => item.Spec2)
+                </td>
+                <td style="width: 260px; text-align: left; border: 1px solid; font-size: 17px">
+                    @Html.DisplayFor(modelItem => item.Spec3)
+                </td>
+                <td style="width: 117px; text-align: left; border: 1px solid; font-size: 17px">
+                    @Html.DisplayFor(modelItem => item.Spec4)
+                </td>
+                @if (item.TestName == "Standard Value")
+                {
+                    <td style="width: 550px; text-align: left; border: 1px solid; font-size: 17px">
+                        75%-85%
+                    </td>
+                }
+                else
+                {
+                    <td style="width: 550px; text-align: left; border: 1px solid; font-size: 17px">
+                        @Html.DisplayFor(modelItem => item.Spec5)
+                    </td>
+                }
+                <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                    @Html.DisplayFor(modelItem => item.Spec6)
+                </td>
+                @if (item.TestName == "Standard Value")
+                {
+                    <td style="width: 450px; text-align: left; border: 1px solid; font-size: 17px">
+                        75%-85%
+                    </td>
+                }
+                else
+                {
+                    <td style="width: 450px; text-align: left; border: 1px solid; font-size: 17px">
+                        @Html.DisplayFor(modelItem => item.Spec7)
+                    </td>
+                }
+
+            </tr>
+
+                    if (count == 11)
+                    {
+                        count--;
+                        Avg1 = Sum1 / count;
+                        Avg2 = Sum2 / count;
+                        Avg3 = Sum3 / count;
+                        Avg4 = Sum4 / count;
+                        Avg5 = Sum5 / count;
+                        Avg6 = Sum6 / count;
+                        Avg7 = Sum7 / count;
+
+                    }
+                }
+                <tr style=" border: 1px solid; ">
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        Avg Value
+                    </td>
+                    <td style="width: 50px; text-align: center; border: 1px solid; font-size: 17px">
+                        @Avg1.ToString("0.00")
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        @Avg2.ToString("0.00")
+                    </td>
+                    <td style="width: 650px; text-align: left; border: 1px solid; font-size: 17px">
+                        @Avg3.ToString("0.00")
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        @Avg4.ToString("0.00")
+                    </td>
+                    <td style="width: 117px; text-align: left; border: 1px solid; font-size: 17px">
+                        @Avg5.ToString("0.00")
+                    </td>
+                    <td style="width: 60px; text-align: center; border: 1px solid; font-size: 17px">
+                        @Avg6.ToString("0.00")
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        @Avg7.ToString("0.00")
+                    </td>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+
+                    if (item.TestName == "Standard Value")
+                    {
+                        val1 = item.Spec1;
+                        val2 = item.Spec2;
+                        val3 = item.Spec3;
+                        val4 = item.Spec4;
+                        //val5 = item.Spec5;
+                        val6 = item.Spec6;
+                        //val7 = item.Spec7;
+                    }
+                    count1++;
+                    SDA1 = SDA1 + ((item.Spec1 - Avg1) * (item.Spec1 - Avg1));
+                    SDA2 = SDA2 + ((item.Spec2 - Avg2) * (item.Spec2 - Avg2));
+                    SDA3 = SDA3 + ((item.Spec3 - Avg3) * (item.Spec3 - Avg3));
+                    SDA4 = SDA4 + ((item.Spec4 - Avg4) * (item.Spec4 - Avg4));
+                    SDA5 = SDA5 + ((item.Spec5 - Avg5) * (item.Spec5 - Avg5));
+                    SDA6 = SDA6 + ((item.Spec6 - Avg6) * (item.Spec6 - Avg6));
+                    SDA7 = SDA7 + ((item.Spec7 - Avg7) * (item.Spec7 - Avg7));
+
+                    SDE1 = SDE1 + ((item.Spec1 - val1) * (item.Spec1 - val1));
+                    SDE2 = SDE2 + ((item.Spec2 - val2) * (item.Spec2 - val2));
+                    SDE3 = SDE3 + ((item.Spec3 - val3) * (item.Spec3 - val3));
+                    SDE4 = SDE4 + ((item.Spec4 - val4) * (item.Spec4 - val4));
+                    SDA5 = SDA5 + ((item.Spec5 - Avg5) * (item.Spec5 - Avg5));
+                    SDE6 = SDE6 + ((item.Spec6 - val6) * (item.Spec6 - val6));
+                    SDA7 = SDA7 + ((item.Spec7 - Avg7) * (item.Spec7 - Avg7));
+
+                    if (count1 == 11)
+                    {
+                        SDA1 = SDA1 / 9;
+                        SDA2 = SDA2 / 9;
+                        SDA3 = SDA3 / 9;
+                        SDA4 = SDA4 / 9;
+                        SDA5 = SDA5 / 9;
+                        SDA6 = SDA6 / 9;
+                        SDA7 = SDA7 / 9;
+                        re1 = SDE1 / 9;
+                        re2 = SDE2 / 9;
+                        CVA1 = (Convert.ToDecimal(Math.Sqrt(Convert.ToDouble(SDA1))) / Avg1) * 100;
+                        CVA2 = (Convert.ToDecimal(Math.Sqrt(Convert.ToDouble(SDA2))) / Avg2) * 100;
+                        CVA3 = (Convert.ToDecimal(Math.Sqrt(Convert.ToDouble(SDA3))) / Avg3) * 100;
+                        CVA4 = (Convert.ToDecimal(Math.Sqrt(Convert.ToDouble(SDA4))) / Avg4) * 100;
+                        CVA5 = (Convert.ToDecimal(Math.Sqrt(Convert.ToDouble(SDA5))) / Avg5) * 100;
+                        CVA6 = (Convert.ToDecimal(Math.Sqrt(Convert.ToDouble(SDA6))) / Avg6) * 100;
+                        CVA7 = (Convert.ToDecimal(Math.Sqrt(Convert.ToDouble(SDA7))) / Avg7) * 100;
+
+                    }
+
+                }
+                @foreach (var item in Model)
+                {
+                    if (item.TestName == "Standard Value")
+                    {
+                        CVE1 = (Convert.ToDecimal(Math.Sqrt(Convert.ToDouble(re1))) / item.Spec1) * 100;
+                        CVE2 = (Convert.ToDecimal(Math.Sqrt(Convert.ToDouble(re2))) / item.Spec2) * 100;
+                    }
+
+                }
+                <tr style=" border: 1px solid; ">
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        SD(based on actual value)
+                    </td>
+                    <td style="width: 50px; text-align: center; border: 1px solid; font-size: 17px">
+                        @Math.Sqrt(Convert.ToDouble(SDA1)).ToString("0.00")
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        @Math.Sqrt(Convert.ToDouble(SDA2)).ToString("0.00")
+                    </td>
+                    <td style="width: 650px; text-align: left; border: 1px solid; font-size: 17px">
+                        @Math.Sqrt(Convert.ToDouble(SDA3)).ToString("0.00")
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        @Math.Sqrt(Convert.ToDouble(SDA4)).ToString("0.00")
+                    </td>
+                    <td style="width: 117px; text-align: left; border: 1px solid; font-size: 17px">
+                        @Math.Sqrt(Convert.ToDouble(SDA5)).ToString("0.00")
+                    </td>
+                    <td style="width: 60px; text-align: center; border: 1px solid; font-size: 17px">
+                        @Math.Sqrt(Convert.ToDouble(SDA6)).ToString("0.00")
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        @Math.Sqrt(Convert.ToDouble(SDA7)).ToString("0.00")
+                    </td>
+                </tr>
+                <tr style=" border: 1px solid; ">
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        CV (%),based on actual value
+                    </td>
+                    <td style="width: 50px; text-align: center; border: 1px solid; font-size: 17px">
+                        @CVA1.ToString("0.00")
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        @CVA2.ToString("0.00")
+                    </td>
+                    <td style="width: 650px; text-align: left; border: 1px solid; font-size: 17px">
+                        @CVA3.ToString("0.00")
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        @CVA4.ToString("0.00")
+                    </td>
+                    <td style="width: 117px; text-align: left; border: 1px solid; font-size: 17px">
+                        @CVA5.ToString("0.00")
+                    </td>
+                    <td style="width: 60px; text-align: center; border: 1px solid; font-size: 17px">
+                        @CVA6.ToString("0.00")
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        @CVA7.ToString("0.00")
+                    </td>
+                </tr>
+                <tr style=" border: 1px solid; ">
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        SD(based on expected value)
+                    </td>
+                    <td style="width: 50px; text-align: center; border: 1px solid; font-size: 17px">
+                        @Math.Sqrt(Convert.ToDouble(re1)).ToString("0.00")
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        @Math.Sqrt(Convert.ToDouble(re2)).ToString("0.00")
+                    </td>
+                    <td style="width: 650px; text-align: left; border: 1px solid; font-size: 17px">
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                    </td>
+                    <td style="width: 117px; text-align: left; border: 1px solid; font-size: 17px">
+                    </td>
+                    <td style="width: 60px; text-align: center; border: 1px solid; font-size: 17px">
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                    </td>
+                </tr>
+                <tr style=" border: 1px solid; ">
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        CV(%),based on expected value
+                    </td>
+                    <td style="width: 50px; text-align: center; border: 1px solid; font-size: 17px">
+                        @CVE1.ToString("0.00")
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                        @CVE2.ToString("0.00")
+                    </td>
+                    <td style="width: 650px; text-align: left; border: 1px solid; font-size: 17px">
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                    </td>
+                    <td style="width: 117px; text-align: left; border: 1px solid; font-size: 17px">
+                    </td>
+                    <td style="width: 60px; text-align: center; border: 1px solid; font-size: 17px">
+                    </td>
+                    <td style="width: 300px; text-align: left; border: 1px solid; font-size: 17px">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>

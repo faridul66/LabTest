@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 
 
-namespace BJProduction.Models
+namespace LabTestRegister.Models
 {
     public class ApplicationGroupManager
     {

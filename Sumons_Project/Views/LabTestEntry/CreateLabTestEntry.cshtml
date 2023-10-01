@@ -1,0 +1,514 @@
+﻿
+@{
+    ViewBag.Title = "CreateLabTestEntry";
+    Layout = "~/Views/Shared/index.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://kendo.cdn.telerik.com/themes/6.2.0/default/default-main.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.6.1.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2023.1.117/js/kendo.all.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: black;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Add padding to containers */
+        .container {
+            padding: 16px;
+            background-color: white;
+        }
+
+        /* Full-width input fields */
+        input[type=text], input[type=password] {
+            width: 100%;
+            padding: 15px;
+            margin: 5px 0 22px 0;
+            display: inline-block;
+            border: none;
+            background: #f1f1f1;
+        }
+
+            input[type=text]:focus, input[type=password]:focus {
+                background-color: #ddd;
+                outline: none;
+            }
+
+        /* Overwrite default styles of hr */
+        hr {
+            border: 1px solid #f1f1f1;
+            margin-bottom: 25px;
+        }
+
+        /* Set a style for the submit button */
+        .registerbtn {
+            background-color: #04AA6D;
+            color: white;
+            padding: 16px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            opacity: 0.9;
+        }
+
+            .registerbtn:hover {
+                opacity: 1;
+            }
+
+        /* Add a blue text color to links */
+        a {
+            color: dodgerblue;
+        }
+
+        /* Set a grey background color and center the text of the "sign in" section */
+        .signin {
+            background-color: #f1f1f1;
+            text-align: center;
+        }
+
+        .k-readonly {
+            color: gray;
+        }
+
+        .selected-value {
+            display: inline-block;
+            vertical-align: middle;
+            width: 24px;
+            height: 24px;
+            background-size: 100%;
+            margin-right: 5px;
+            border-radius: 50%;
+        }
+
+        #CompanyName-list .k-list-item-text {
+            line-height: 1em;
+            min-width: 300px;
+        }
+
+        .k-list-scroller {
+            overflow-y: scroll;
+        }
+
+        #CompanyName-list .k-list-item-text > span:first-child {
+            -moz-box-shadow: inset 0 0 30px rgba(0,0,0,.3);
+            -webkit-box-shadow: inset 0 0 30px rgba(0,0,0,.3);
+            box-shadow: inset 0 0 30px rgba(0,0,0,.3);
+            margin: 10px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+
+        .k-no-data {
+            display: table;
+            width: 100%;
+            padding-top: 20px;
+        }
+
+        .k-dropdown-wrap {
+            height: 35px;
+        }
+
+            .k-dropdown-wrap:hover {
+                color: #2e2e2e;
+            }
+
+        span.k-icon.k-i-arrow-60-down {
+            margin-top: 10px;
+        }
+
+        .k-expander-title {
+            color: white;
+        }
+
+        .k-expander-header {
+            color: #424242;
+            background-color: yellowgreen;
+        }
+
+            .k-expander-header:hover {
+                color: #424242;
+                background-color: yellowgreen;
+            }
+        /* Add this CSS to your stylesheet */
+        /* Add this CSS to your stylesheet */
+        .k-grid-header {
+            position: sticky;
+            top: 120px;
+            z-index: 5; /* Adjust z-index as needed */
+            background-color: #fff; /* Background color for the fixed header */
+        }
+
+        .k-grid-content {
+            overflow-y: auto;
+            max-height: 400px; /* Adjust the max height as needed */
+        }
+
+
+
+    </style>
+
+</head>
+<body>
+    <div id="ex1">
+        <div class="row">
+            <div class="col-md-3">
+                <label><b>Test Report No.</b></label>
+                <input type="text" placeholder="Enter Report No." style="height:10px" id="ReportNo" disabled>
+            </div>
+            <div class="col-md-2">
+                <label for="psw"><b>Date</b></label>
+                <input type="text" style="height:10px" class="form-control" data-toggle="datepicker" id="ReportDate" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" />
+            </div>
+            <div class="col-md-4">
+                <label><b>Customer Name</b></label><br />
+                <input  id="ddlCompanyName">
+            </div>
+            <div class="col-md-3">
+                <label><b>Sample Receive Date</b></label>
+                <input type="text" style="height:10px" class="form-control" data-toggle="datepicker" id="SampleRDate" data-date-format="dd/mm/yyyy" placeholder="Example: DD/MM/YYYY" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label for="psw"><b>Address & Contact</b></label>
+                <input type="text" placeholder="Address & Contact" style="height: 10px;" id="ddlAddress">
+            </div>
+            <div class="col-md-4">
+                <label for="psw"><b>Test Period</b></label>
+                @*<input type="text" placeholder="Test Period" style="height: 10px;" id="TestPeriod">*@
+                <input type="text" style="height:10px" class="form-control" data-toggle="datepicker" id="TestPeriod" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" />
+            </div>
+            <div class="col-md-4">
+                <label for="psw"><b>Sample Details</b></label>
+                <input type="text" style="height:10px" placeholder="Enter Sample Details" id="SampleDetails" required>
+            </div>
+            <div class="col-md-4">
+                <label><b>Sample Number</b></label><br />
+                <input style="height: 30px;width: 100%;"placeholder="Enter Sample No" id="SampleNo">
+            </div>
+            <div class="col-md-4">
+                <label for="psw"><b>Sample Description</b></label>
+                <input type="text" style="height:10px" placeholder="Enter Sample Description" id="description" required>
+            </div>
+            <div class="col-md-4">
+                <label for="email"><b>Fiber Details</b></label>
+                <input type="text" style="height:10px" placeholder="Enter Fiber Details" id="FiberDetail" required>
+            </div>
+        </div>
+    </div>
+    <div id="ex2">
+        <div id="Iteminfo">
+
+        </div>
+        <br />
+        <div class="col-md-12" style="text-align:end">
+            <button type="submit" class="btn btn-success" onclick="Save()">Save</button>
+        </div>
+    </div>
+    <script>
+        $('#ex1').kendoExpansionPanel({
+            title: 'Lab Test Infomation',
+            expanded: true
+        });
+        $('#ex2').kendoExpansionPanel({
+            title: 'Lab Test Details',
+            expanded: true
+        });
+
+    </script>
+</body>
+</html>
+
+@section scripts{
+
+    <script>
+
+        $(document).ready(function () {
+            LoadAllData();
+        })
+        var TestList = [];
+        var SpecificationList = [];
+        var CompanyList = [];
+        function LoadAllData() {
+            $.ajax({
+                /*url: '/BillingRegisterList/GetAllDropdownData',*/
+                url: '@Url.Action("GetAllDropdownData", "LabTestEntry")',
+                type: 'POST',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(null),
+                success: function (Data) {
+                    ResultArray = JSON.parse(Data);
+                    TestList = ResultArray.LabData;
+                    if (TestList.length > 0) {
+                        CompanyList = ResultArray.CompanyList;
+                        SpecificationList = ResultArray.SpecificationList;
+                        Companydata();
+                        LabTestEntryGrid();
+                        $("#ReportNo").val(ResultArray.EntryNo);
+                    }
+                    else {
+                        Swal.fire('Data Not Found', '', 'warning');
+                    }
+                },
+                error: function (xhr) {
+                    toastr.warning("Data Not Found");
+                }
+            });
+        }
+        function Companydata() {
+            $("#ddlCompanyName").kendoComboBox({
+                placeholder: "select company",
+                dataTextField: "company_name",
+                dataValueField: "company_code",
+                dataSource: CompanyList,
+                filter: "contains",
+                suggest: true,
+                index: -1,
+                change:OnCompany
+            });
+        }
+        function OnCompany() {
+            var Id = this.value();
+            var FilterData = _.filter(CompanyList, function (e) { return e.company_code == Id });
+            $("#ddlAddress").prop("disabled", true);
+            $("#ddlAddress").val(FilterData[0].address);
+        }
+        function LabTestEntryGrid() {
+            $("#Iteminfo").kendoGrid({
+                //dataSource: TestList,
+                dataSource: {
+                    data: TestList,
+                    schema: {
+                        model: {
+                            Id: "Id",
+                        }
+                    }
+                },
+                scrollable: true,
+                resizable: true,
+                columns: [
+
+                    {
+                        field: "TestName", stickable: true, title: "Test Name"
+                    },
+                    {
+                        template: function (x) {
+                            if (x.Id == 2) {
+                                return x.Spec1;
+                            }
+                            if (x.Id == 3) {
+                                return "<input class='Kcombo' id='Spec1_" + x.Id + "' style='width:95px'>";
+                            }
+                            else {
+                                return "<input id='Spec1_" + x.Id +"' style='width:95px'>";
+                            }
+                        },
+                        //template: "<input class='form-control nextrow'id='qty_#:Id#' type='number' onblur='CountTotalFabric(#:rollId#)' style='width:-webkit-fill-available; height:12px'>",
+                        field: "Spec1", stickable: true, title: "Mass per <br> unit area, <br> gm/m2",
+                        headerAttributes: {
+                            class: "custom-column-header"
+                        }
+                    },
+                    {
+                        template: function (x) {
+                            if (x.Id == 2) {
+                                return x.Spec2;
+                            }
+                            else {
+                                return "<input id='Spec2_" + x.Id +"' style='width:95px' type='number'>";
+                            }
+                        },
+                        field: "Spec2", stickable: true, title: "Thickness, <br>mm"
+                    },
+                    {
+                        template: function (x) {
+                            if (x.Id == 2) {
+                                return x.Spec3;
+                            }
+                            else {
+                                return "<input id='Spec3_" + x.Id +"' style='width:95px' type='number'>";
+                            }
+                        },
+                        field: "Spec3", stickable: true, title: "Static <br> Puncture <br> Test (CBR) <br> Load,N"
+                    },
+                    {
+                        template: function (x) {
+                            if (x.Id == 2) {
+                                return x.Spec4;
+                            }
+                            else {
+                                return "<input id='Spec4_" + x.Id +"' style='width:95px' type='number'>";
+                            }
+                        },
+                        field: "Spec4", stickable: true, title: "Wide-width <br> tensile <br> strength,<br> KN/m (CMD)"
+                    },
+                    {
+                        template: function (x) {
+                            if (x.Id == 2) {
+                                return x.Spec5;
+                            }
+                            else {
+                                return "<input id='Spec5_" + x.Id +"' style='width:95px'>";
+                            }
+                        },
+                        field: "Spec5", stickable: true, title: "Wide-width <br> tensile <br> Elongation,<br> % (CMD)"
+                    },
+                    {
+                        template: function (x) {
+                            if (x.Id==2) {
+                                return x.Spec6;
+                            }
+                            else {
+                                return "<input id='Spec6_" + x.Id +"' style='width:95px' type='number'>"
+                            }
+                        },
+                        field: "Spec6", stickable: true, title: "Wide-width <br> tensile <br> strength,<br> KN/m (MD)"
+                    },
+                    {
+                        template: function (x) {
+                            if (x.Id==2) {
+                                return x.Spec7;
+                            }
+                            else {
+                                return "<input id='Spec7_" + x.Id +"' style='width:95px'>"
+                            }
+                        },
+                        field: "Spec7", stickable: true, title: "Wide-width <br> tensile <br> Elongation,<br> % (MD)"
+
+                    },
+
+                ],
+                dataBound: function () {
+                    // Initialize ComboBox for Id equal to 3 after the grid is fully initialized
+                    $("input[id^='Spec1_']").each(function () {
+                        var id = $(this).attr("id");
+                        if (id && id.startsWith("Spec1_3")) {
+                            $(this).kendoComboBox({
+                                dataSource: SpecificationList,
+                                dataTextField: "MassPerUnit",
+                                dataValueField: "MassPerUnit",
+                                change: onMassChange
+                });
+                        }
+                    });
+                }
+            });
+        }
+        function onMassChange() {
+            var Id = this.value();
+            var FilterData = _.filter(SpecificationList, function (e) { return e.MassPerUnit == Id });
+            $("#Spec2_3").prop("disabled", true);
+            $("#Spec3_3").prop("disabled", true);
+            $("#Spec4_3").prop("disabled", true);
+            $("#Spec5_3").prop("disabled", true);
+            $("#Spec6_3").prop("disabled", true);
+            $("#Spec7_3").prop("disabled", true);
+            $("#Spec2_3").val(FilterData[0].Thikness);
+            $("#Spec3_3").val(FilterData[0].Static_CBR);
+            $("#Spec4_3").val(FilterData[0].WideWidthTensile);
+            $("#Spec5_3").val(FilterData[0].Elongation);
+            $("#Spec6_3").val(FilterData[0].WideWidthTensile);
+            $("#Spec7_3").val(FilterData[0].Elongation);
+        }
+        function Save() {
+            ItemInfoList = [];
+            ItemDetail = [];
+            var saveData = {};
+
+            saveData.CustomerName = $("#ddlCompanyName").data("kendoComboBox").value();
+            saveData.Address = $("#ddlAddress").val();
+            saveData.TestDate = $("#ReportDate").val();
+            saveData.SampleReceivedDate = $("#SampleRDate").val();
+            saveData.TestPeriod = $("#TestPeriod").val();
+            saveData.TestReportNo = $("#ReportNo").val();
+            saveData.SampleReference = $("#SampleDetails").val();
+            saveData.SampleNo = $("#SampleNo").val();
+            saveData.SampleDescription = $("#description").val();
+            saveData.FibreDetails = $("#FiberDetail").val();
+            //var val = moment($("#deliveryDate").val()).format("YYYY-MM-DDTHH:MM");
+            //saveData.DeliveryDate = val;
+            for (var i = 1; i < TestList.length; i++) {
+
+                var item = {}
+                var Id = TestList[i].Id;
+                item.TestName = TestList[i].TestName;
+                item.Id = TestList[i].Id;
+                item.Spec1 = $("#Spec1_" + Id).val();
+                if (item.Spec1 == undefined) {
+                    item.Spec1 = $("#Spec1_" + Id).data("kendoComboBox").value();
+                }
+                else {
+                    item.Spec1 = $("#Spec1_" + Id).val();
+                }
+
+                item.Spec2 = $("#Spec2_" + Id).val();
+                item.Spec3 = $("#Spec3_" + Id).val();
+                item.Spec4 = $("#Spec4_" + Id).val();
+                if (item.Id == 3) {
+                    item.Spec5 = 0;
+                }
+                else {
+                    item.Spec5 = $("#Spec5_" + Id).val();
+                }
+                item.Spec6 = $("#Spec6_" + Id).val();
+                if (item.Id == 3) {
+                    item.Spec7 = 0;
+                }
+                else {
+                    item.Spec7 = $("#Spec7_" + Id).val();
+                }
+                ItemDetail.push(item);
+            }
+            saveData.ItemDetail = ItemDetail;
+            if (saveData.DeliveryAddress == "") {
+                Swal.fire('Please Enter Delivery Address', '', 'warning');
+                return;
+            }
+            else {
+                //var FilterData = _.reject(ItemDetail, function (e) { return e.Id == 3 });
+                //saveData.ItemDetail = FilterData;
+                var postData = JSON.stringify(saveData);
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("PostData", "LabTestEntry")',
+                    data: postData,
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+                        //unblockUI();
+                        var result = JSON.parse(data);
+                        if (result.StatusCode == "1") {
+                            Id = 1;
+                            Swal.fire('Saved Successfully', '', 'success').then(function () { location.reload(); });
+                        }
+                        else {
+                            Swal.fire('Error while Save data', '', 'warning');
+                        }
+                    },
+                    error: function (data) {
+                        Id = 1;
+                        Swal.fire('Error while Save data', '', 'warning');
+                    }
+                });
+            }
+        }
+
+
+
+
+    </script>
+}
+
+

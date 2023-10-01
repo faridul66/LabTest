@@ -1,6 +1,6 @@
 ﻿using Owin;
 
-namespace BJProduction
+namespace LabTestRegister
 {
     public partial class Startup
     {
